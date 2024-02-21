@@ -20,10 +20,15 @@ export class AxiosService {
     axios.defaults.baseURL = 'http://localhost:8080/api/v1';
     axios.defaults.headers.post['Content-Type'] = 'application/json';
     axios.interceptors.response.use(null, (error : AxiosError) => {
-      if (error.response!.status === 403 && router.url !== '/login') {
+      const notAuthenticated = error.response!.status === 403;
+      const loginIsCurrentPage = router.url === '/login';
+      if (notAuthenticated && !loginIsCurrentPage) {
         this.dialog.open(AuthenticationComponent, {
           injector: injector,
         });
+      }
+      if(notAuthenticated && loginIsCurrentPage) {
+        snackBar.open('You are not logged in.', undefined, {duration: 2000});
       }
       if(error.config!.url === 'auth/jwt') {
         snackBar.open('Login or password are incorrect!', undefined, {duration: 2000});

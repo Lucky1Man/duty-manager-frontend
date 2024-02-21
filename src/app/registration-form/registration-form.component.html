@@ -1,64 +1,62 @@
-<div>
-  <form
-    [formGroup]="registerForm"
-    class="register-form"
-    (ngSubmit)="$event.preventDefault(); register()"
-  >
-    <mat-form-field class="form-field">
-      <mat-label>Enter your full name</mat-label>
-      <input
-        matInput
-        placeholder="Guest Guest"
-        formControlName="senderFullName"
-        required
-      />
-      @if (registerForm.get('senderFullName')?.invalid) {
-      <mat-error>{{ getErrorMessage("senderFullName") }}</mat-error>
-      }
-    </mat-form-field>
+<form
+  [formGroup]="registerForm"
+  class="register-form"
+  (ngSubmit)="$event.preventDefault(); register()"
+>
+  <mat-form-field class="form-field">
+    <mat-label>Enter your full name</mat-label>
+    <input
+      matInput
+      placeholder="Guest Guest"
+      formControlName="senderFullName"
+      required
+    />
+    @if (registerForm.get('senderFullName')?.invalid) {
+    <mat-error>{{ getErrorMessage("senderFullName") }}</mat-error>
+    }
+  </mat-form-field>
 
-    <mat-form-field class="form-field">
-      <mat-label>Enter your email</mat-label>
-      <input
-        matInput
-        placeholder="pat@example.com"
-        formControlName="senderEmail"
-        required
-      />
-      @if (registerForm.get('senderEmail')?.invalid) {
-      <mat-error>{{ getErrorMessage("senderEmail") }}</mat-error>
-      }
-    </mat-form-field>
+  <mat-form-field class="form-field">
+    <mat-label>Enter your email</mat-label>
+    <input
+      matInput
+      placeholder="pat@example.com"
+      formControlName="senderEmail"
+      required
+    />
+    @if (registerForm.get('senderEmail')?.invalid) {
+    <mat-error>{{ getErrorMessage("senderEmail") }}</mat-error>
+    }
+  </mat-form-field>
 
-    <mat-form-field class="form-field mb-3">
-      <mat-label>Enter your password</mat-label>
-      <input
-        matInput
-        placeholder="some secure password"
-        formControlName="senderPassword"
-        required
-        [type]="hide ? 'password' : 'text'"
-      />
-      <button
-        class="password-hide-icon"
-        mat-icon-button
-        matSuffix
-        (click)="hide = !hide"
-        [attr.aria-label]="'Hide password'"
-        [attr.aria-pressed]="hide"
-      >
-        <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
-      </button>
-      @if (registerForm.get('senderPassword')?.invalid) {
-      <mat-error>
-        {{ getErrorMessage("senderPassword") }}
-      </mat-error>
-      }
-    </mat-form-field>
-    <div class="d-flex justify-content-center">
-      <button type="submit" class="btn btn-primary btn-block mb-2">
-        Register
-      </button>
-    </div>
-  </form>
-</div>
+  <mat-form-field class="form-field mb-3">
+    <mat-label>Enter your password</mat-label>
+    <input
+      matInput
+      placeholder="some secure password"
+      formControlName="senderPassword"
+      required
+      [type]="hide ? 'password' : 'text'"
+    />
+    <button
+      class="password-hide-icon"
+      mat-icon-button
+      matSuffix
+      (click)="hide = !hide"
+      [attr.aria-label]="'Hide password'"
+      [attr.aria-pressed]="hide"
+    >
+      <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+    </button>
+    @if (registerForm.get('senderPassword')?.invalid) {
+    <mat-error>
+      {{ getErrorMessage("senderPassword") }}
+    </mat-error>
+    }
+  </mat-form-field>
+  <div class="d-flex justify-content-center">
+    <button type="submit" class="btn btn-primary btn-block mb-2">
+      Register
+    </button>
+  </div>
+</form>

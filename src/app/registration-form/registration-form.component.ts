@@ -4,7 +4,6 @@ import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { NgEventBus } from 'ng-event-bus';
 import { validatePassword } from './password-validator';
+import { getErrorMessage } from './validation-errors-getter';
 
 @Component({
   selector: 'registration-form',
@@ -24,7 +24,7 @@ import { validatePassword } from './password-validator';
     ReactiveFormsModule,
     CommonModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
   ],
   templateUrl: './registration-form.component.html',
   styleUrl: './registration-form.component.css',
@@ -46,29 +46,6 @@ export class RegistrationFormComponent {
     ]),
   });
 
-  getErrorMessage(formControlName: string): string {
-    const formControl = this.registerForm.get(formControlName);
-    if (formControl?.hasError('required')) {
-      return 'This field is required';
-    } else if (formControl?.hasError('email')) {
-      return 'Invalid email';
-    } else if (formControl?.hasError('minlength')) {
-      return 'Password should be at least 8 symbols';
-    }
-    return this.errorsToText(formControl?.errors);
-  }
-
-  private errorsToText(errors: ValidationErrors | null | undefined): string {
-    if (!errors) {
-      return '';
-    }
-    let message = '';
-    for (const prop in errors) {
-      message += errors[prop] + ' ';
-    }
-    return message;
-  }
-
   register() {
     if (this.registerForm.valid) {
       this.dialogRef?.close();
@@ -78,5 +55,9 @@ export class RegistrationFormComponent {
         password: this.registerForm.get('senderPassword')?.value,
       });
     }
+  }
+
+  getErrorMessage(formControlName: string) {
+    return getErrorMessage(formControlName, this.registerForm);
   }
 }
