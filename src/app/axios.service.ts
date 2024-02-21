@@ -5,6 +5,7 @@ import { LoginFormComponent } from './login-form/login-form.component';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Participant } from '../shared/participant';
+import { AuthenticationComponent } from './authentication/authentication.component';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +21,7 @@ export class AxiosService {
     axios.defaults.headers.post['Content-Type'] = 'application/json';
     axios.interceptors.response.use(null, (error : AxiosError) => {
       if (error.response!.status === 403 && router.url !== '/login') {
-        this.dialog.open(LoginFormComponent, {
+        this.dialog.open(AuthenticationComponent, {
           injector: injector,
         });
       }

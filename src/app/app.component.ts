@@ -5,7 +5,7 @@ import { AxiosService } from './axios.service';
 import { LoginFormComponent } from './login-form/login-form.component';
 import { HeaderComponent } from './header/header.component';
 import { AxiosError } from 'axios';
-import { NgEventBus } from 'ng-event-bus';
+import { MetaData, NgEventBus } from 'ng-event-bus';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Participant } from '../shared/participant';
@@ -37,13 +37,25 @@ export class AppComponent {
       router.navigate(['']);
       eventBus.cast('authChange');
     });
+    eventBus.on('register').subscribe((register: MetaData<any>) => {
+      axios
+        .request('post', 'participants', register.data)
+        .then(() =>
+          eventBus.cast('doLogin', {
+            login: register.data.email,
+            password: register.data.password,
+          })
+        ).catch((error: AxiosError<any, any>) => snackBar.open(error.response?.data?.message, undefined, {duration: 5000}));
+    });
   }
 
   getData() {
     this.axios
       .request('get', 'duties')
       .then((duties) => console.log(duties))
-      .catch((error) => {return});
+      .catch((error) => {
+        return;
+      });
   }
 
   private signIn(credentials: any) {
@@ -64,4 +76,5 @@ export class AppComponent {
       })
       .finally(() => this.eventBus.cast('authChange'));
   }
+
 }
