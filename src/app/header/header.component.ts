@@ -3,8 +3,9 @@ import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { NgEventBus } from 'ng-event-bus';
+import { MetaData, NgEventBus } from 'ng-event-bus';
 import { Participant } from '../../shared/participant';
+import { Events } from '../../shared/duty-manager-events';
 
 @Component({
   selector: 'app-header',
@@ -16,24 +17,26 @@ import { Participant } from '../../shared/participant';
 export class HeaderComponent {
   private _participant?: Participant;
   constructor(private eventBus: NgEventBus) {
-    this._participant = this.getParticipantFromLocalStorage();
     eventBus
-      .on('authChange')
-      .subscribe(
-        () => (this._participant = this.getParticipantFromLocalStorage())
+      .on(Events.LOGGED_IN)
+      .subscribe((participantData: MetaData<any>) =>
+        this.setParticipant(participantData.data as Participant)
       );
+    eventBus
+      .on(Events.LOGGED_OUT)
+      .subscribe(() => (this._participant = undefined));
   }
 
-  private getParticipantFromLocalStorage(): Participant | undefined {
-    const stringParticipant = window.localStorage.getItem('participant');
-    if (stringParticipant) {
-      return JSON.parse(stringParticipant);
+  private setParticipant(participant: Participant) {
+    if (!this._participant) {
+      this._participant = participant;
+    } else if (!this._participant.equals(participant)) {
+      this._participant = participant;
     }
-    return undefined;
   }
 
   logout() {
-    this.eventBus.cast('logout');
+    this.eventBus.cast(Events.LOGOUT);
   }
 
   get participant() {

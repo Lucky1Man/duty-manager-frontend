@@ -1,14 +1,18 @@
 import { HttpClientModule } from '@angular/common/http';
-import { Component, Injector } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
-import { AxiosService } from './axios.service';
-import { LoginFormComponent } from './login-form/login-form.component';
-import { HeaderComponent } from './header/header.component';
-import { AxiosError } from 'axios';
-import { MetaData, NgEventBus } from 'ng-event-bus';
+import { AfterContentInit, AfterRenderRef, AfterViewChecked, AfterViewInit, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router, RouterOutlet } from '@angular/router';
+import { AxiosError } from 'axios';
+import { MetaData, NgEventBus } from 'ng-event-bus';
+import { Duty } from '../shared/duty';
 import { Participant } from '../shared/participant';
+import { AxiosService } from './axios.service';
+import { HeaderComponent } from './header/header.component';
+import { LoginFormComponent } from './login-form/login-form.component';
+import { Events } from '../shared/duty-manager-events';
+import { AuthenticationService } from './authentication.service';
+import { ExecutionFact } from '../shared/execution-fact';
 
 @Component({
   selector: 'app-root',
@@ -21,60 +25,56 @@ import { Participant } from '../shared/participant';
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
-  providers: [NgEventBus, AxiosService, MatDialog],
+  providers: [NgEventBus, AxiosService, MatDialog, AuthenticationService],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   constructor(
     private axios: AxiosService,
-    private router: Router,
     private eventBus: NgEventBus,
-    snackBar: MatSnackBar
+    private authenticationService: AuthenticationService,
+    private snackBar: MatSnackBar
   ) {
-    eventBus.on('doLogin').subscribe((login) => this.signIn(login.data));
-    eventBus.on('logout').subscribe(() => {
-      snackBar.open('You were logged out.', undefined, { duration: 2000 });
-      axios.setAuthToken(null);
-      router.navigate(['']);
-      eventBus.cast('authChange');
-    });
-    eventBus.on('register').subscribe((register: MetaData<any>) => {
-      axios
-        .request('post', 'participants', register.data)
-        .then(() =>
-          eventBus.cast('doLogin', {
-            login: register.data.email,
-            password: register.data.password,
-          })
-        ).catch((error: AxiosError<any, any>) => snackBar.open(error.response?.data?.message, undefined, {duration: 5000}));
+    eventBus.on(Events.FETCH_DUTIES).subscribe(() => this.castDuties());
+    eventBus
+      .on(Events.FETCH_EXECUTION_FACTS)
+      .subscribe(() => this.castExecutionFacts());
+    eventBus
+      .on(Events.RECORD_EXECUTION_FACT)
+      .subscribe((recordMeta: MetaData<any>) => this.recordExecutionFact(recordMeta.data));
+  }
+
+  ngOnInit(): void {
+    this.authenticationService.checkIfAlreadyLoggedIn();
+  }
+
+  private castDuties(): void {
+    this.axios.request('get', 'duties').then((returnedDuties) => {
+      this.eventBus.cast(Events.DUTIES_FETCHED, returnedDuties.data as Duty[]);
     });
   }
 
-  getData() {
+  private castExecutionFacts(): void {
     this.axios
-      .request('get', 'duties')
-      .then((duties) => console.log(duties))
-      .catch((error) => {
-        return;
+      .request('get', 'execution-facts/active', null, {
+        from: '2024-01-23T07:30:47',
+        executorId: this.axios.getParticipant()?.id,
+      })
+      .then((returnedDuties) => {
+        this.eventBus.cast(
+          Events.EXECUTION_FACTS_FETCHED,
+          returnedDuties.data as ExecutionFact[]
+        );
       });
   }
 
-  private signIn(credentials: any) {
+  private recordExecutionFact(data: any): void {
+    const newLocal = {
+      ...data,
+      executorId: this.axios.getParticipant()?.id,
+    };
     this.axios
-      .request('post', 'auth/jwt', {
-        email: credentials.login,
-        password: credentials.password,
-      })
-      .then((response) => {
-        let data = response.data as Participant;
-        if (data) {
-          this.axios.setAuthToken(data);
-        }
-        this.router.navigate(['']);
-      })
-      .catch((errResponse) => {
-        this.axios.setAuthToken(null);
-      })
-      .finally(() => this.eventBus.cast('authChange'));
+      .request('post', 'execution-facts', newLocal)
+      .then(() => this.eventBus.cast(Events.FETCH_EXECUTION_FACTS))
+      .catch((error: AxiosError<any, any>) => this.snackBar.open(error.response?.data.message, undefined, {duration: 10000}));
   }
-
 }

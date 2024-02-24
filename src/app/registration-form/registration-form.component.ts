@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { NgEventBus } from 'ng-event-bus';
 import { validatePassword } from './password-validator';
 import { getErrorMessage } from './validation-errors-getter';
+import { Events } from '../../shared/duty-manager-events';
 
 @Component({
   selector: 'registration-form',
@@ -49,7 +50,7 @@ export class RegistrationFormComponent {
   register() {
     if (this.registerForm.valid) {
       this.dialogRef?.close();
-      this.eventBus.cast('register', {
+      this.eventBus.cast(Events.REGISTER, {
         fullName: this.registerForm.get('senderFullName')?.value,
         email: this.registerForm.get('senderEmail')?.value,
         password: this.registerForm.get('senderPassword')?.value,

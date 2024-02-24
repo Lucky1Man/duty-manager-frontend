@@ -45,6 +45,7 @@
       (click)="hide = !hide"
       [attr.aria-label]="'Hide password'"
       [attr.aria-pressed]="hide"
+      type="button"
     >
       <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
     </button>
@@ -55,8 +56,6 @@
     }
   </mat-form-field>
   <div class="d-flex justify-content-center">
-    <button type="submit" class="btn btn-primary btn-block mb-2">
-      Register
-    </button>
+    <button mat-raised-button color="primary">Register</button>
   </div>
 </form>

@@ -1,0 +1,14 @@
+.execution-fact-list-container {
+  min-height: 100%;
+}
+
+.execution-fact-items {
+  flex-grow: 1;
+  max-height: 76vh;
+  overflow: auto;
+}
+
+.execution-fact-item {
+  margin-top: 10px;
+}
+

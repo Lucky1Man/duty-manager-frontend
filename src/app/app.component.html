@@ -1,5 +1,7 @@
-<app-header></app-header>
-<div class="container" style="margin-top: 5em">
-  <button (click)="getData()">Get data</button>
-  <router-outlet></router-outlet>
+<div class="app-root d-flex flex-column">
+  <app-header></app-header>
+  <div class="container">
+    <router-outlet></router-outlet>
+  </div>
 </div>
+

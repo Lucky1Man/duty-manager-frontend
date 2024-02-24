@@ -1,17 +1,13 @@
 <header>
   <mat-toolbar class="d-flex justify-content-around">
-    <button
-      mat-icon-button
-      class="example-icon"
-      aria-label="Example icon-button with menu icon"
-    >
+    <button mat-icon-button>
       <mat-icon>menu</mat-icon>
     </button>
     <a href="#" routerLink="" style="color: black; text-decoration: none"
       >Duty manager</a
     >
     <div>
-      <span *ngIf="participant !== undefined">{{participant.fullName}}</span>
+      <span *ngIf="participant !== undefined">{{ participant.fullName }}</span>
       <button mat-raised-button class="ms-2" (click)="logout()">Logout</button>
     </div>
   </mat-toolbar>

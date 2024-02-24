@@ -1,0 +1,15 @@
+.form-field {
+    display: block;
+    min-width: 250px;
+    width: 100%;
+  }
+  
+  .checkbox-instant {
+    font-size: 20px;
+  }
+  
+  .instant-section {
+      margin-top: 8px;
+      margin-left: 5px;
+  }
+  

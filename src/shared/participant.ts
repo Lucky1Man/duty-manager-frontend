@@ -6,8 +6,12 @@ export class Participant {
     public readonly role: Role,
     public readonly jwt: string
   ) {}
+
+  public equals(other: Participant) {
+    return this.id === other.id;
+  }
 }
 
-class Role {
+export class Role {
   constructor(public readonly name: string) {}
 }

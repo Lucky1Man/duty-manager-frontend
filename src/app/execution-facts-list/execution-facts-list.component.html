@@ -1,0 +1,8 @@
+<div class="d-flex flex-column execution-fact-list-container">
+  <div class="execution-fact-items">
+    @for (executionFact of executionFacts; track $index) {
+      <div class="execution-fact-item"><execution-fact-item [executionFact]="executionFact"></execution-fact-item></div>
+    }
+  </div>
+  <div class="p-2 record-execution-fact"><record-execution-fact></record-execution-fact></div>
+</div>

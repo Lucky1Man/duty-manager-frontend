@@ -1,9 +1,8 @@
 import { Injectable, Injector } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import axios, { AxiosError, AxiosResponse } from 'axios';
-import { LoginFormComponent } from './login-form/login-form.component';
-import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Participant } from '../shared/participant';
 import { AuthenticationComponent } from './authentication/authentication.component';
 
@@ -11,6 +10,9 @@ import { AuthenticationComponent } from './authentication/authentication.compone
   providedIn: 'root',
 })
 export class AxiosService {
+  loginFormOpened = false;
+  participant?: Participant;
+
   constructor(
     private dialog: MatDialog,
     injector: Injector,
@@ -19,53 +21,72 @@ export class AxiosService {
   ) {
     axios.defaults.baseURL = 'http://localhost:8080/api/v1';
     axios.defaults.headers.post['Content-Type'] = 'application/json';
-    axios.interceptors.response.use(null, (error : AxiosError) => {
+    axios.interceptors.response.use(null, (error: AxiosError) => {
       const notAuthenticated = error.response!.status === 403;
       const loginIsCurrentPage = router.url === '/login';
-      if (notAuthenticated && !loginIsCurrentPage) {
-        this.dialog.open(AuthenticationComponent, {
+      if (notAuthenticated && !loginIsCurrentPage && !this.loginFormOpened) {
+        const dialogRef = this.dialog.open(AuthenticationComponent, {
           injector: injector,
         });
+        this.loginFormOpened = true;
+        dialogRef.afterClosed().subscribe(() => {
+          this.loginFormOpened = false;
+        });
       }
-      if(notAuthenticated && loginIsCurrentPage) {
-        snackBar.open('You are not logged in.', undefined, {duration: 2000});
+      if (notAuthenticated && loginIsCurrentPage) {
+        snackBar.open('You are not logged in.', undefined, { duration: 2000 });
       }
-      if(error.config!.url === 'auth/jwt') {
-        snackBar.open('Login or password are incorrect!', undefined, {duration: 2000});
+      if (error.config!.url === 'auth/jwt') {
+        snackBar.open('Login or password are incorrect!', undefined, {
+          duration: 2000,
+        });
       }
       return Promise.reject(error);
     });
   }
 
-  getAuthToken(): string | null {
-    return window.localStorage.getItem('auth_token');
-  }
-
-  setAuthToken(participant: Participant | null): void {
-    if (participant !== null) {
-      window.localStorage.setItem('auth_token', participant.jwt);
-      window.localStorage.setItem('participant', JSON.stringify(participant));
+  getParticipant(): Participant | null {
+    if (this.participant) {
+      return this.participant;
     } else {
-      window.localStorage.removeItem('auth_token');
-      window.localStorage.removeItem('participant');
+      const stringParticipant = window.localStorage.getItem('participant');
+      if (stringParticipant === null) {
+        return null;
+      }
+      const participant = JSON.parse(stringParticipant);
+      this.participant = participant as Participant;
+      return participant;
     }
   }
 
-  request(
+  setParticipant(participant: Participant | null): void {
+    if (participant !== null) {
+      window.localStorage.setItem('participant', JSON.stringify(participant));
+      this.participant = participant;
+    } else {
+      window.localStorage.removeItem('participant');
+      this.participant = undefined;
+    }
+  }
+
+  request <T>(
     method: string,
     url: string,
-    data?: any
-  ): Promise<AxiosResponse<any, any>> {
+    data?: any,
+    parameters?: any
+  ): Promise<AxiosResponse<any, T>> {
     let headers = {};
 
-    if (this.getAuthToken() !== null) {
-      headers = { Authorization: 'Bearer ' + this.getAuthToken() };
+    const participant = this.getParticipant();
+    if (participant !== null) {
+      headers = { Authorization: 'Bearer ' + participant.jwt };
     }
     return axios({
       method: method,
       url: url,
       data: data,
       headers: headers,
+      params: parameters,
     });
   }
 }

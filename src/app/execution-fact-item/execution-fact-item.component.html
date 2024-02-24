@@ -1,0 +1,26 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title
+      >Executor: {{ executionFact.executorFullName }}</mat-card-title
+    >
+  </mat-card-header>
+  <mat-card-content>
+    <div class="description">
+      <span>Description: {{ executionFact.description }}</span>
+      @if(executionFact.finishTime != null) {
+      <span>Duty name: {{ executionFact.dutyName }}</span>
+      }
+      <div>
+        <span>Started at: {{ executionFact.startTime }}</span>
+        @if(executionFact.finishTime !== null) {
+        <span>Ended at: {{ executionFact.finishTime }}</span>
+        }
+      </div>
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    @if(executionFact.finishTime === null) {
+    <button mat-button>Finish</button>
+    }
+  </mat-card-actions>
+</mat-card>

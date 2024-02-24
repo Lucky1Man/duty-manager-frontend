@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { NgEventBus } from 'ng-event-bus';
 import { validatePassword } from '../registration-form/password-validator';
 import { getErrorMessage } from '../registration-form/validation-errors-getter';
+import { Events } from '../../shared/duty-manager-events';
 
 @Component({
   selector: 'login-form',
@@ -48,7 +49,7 @@ export class LoginFormComponent {
   signIn() {
     if(this.loginForm.valid) {
       this.dialogRef?.close();
-      this.eventBus.cast('doLogin', {
+      this.eventBus.cast(Events.LOGIN, {
         login: this.loginForm.get('senderEmail')?.value,
         password: this.loginForm.get('senderPassword')?.value,
       });
