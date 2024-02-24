@@ -10,7 +10,7 @@ import { ExecutionFact } from '../../shared/execution-fact';
   standalone: true,
   imports: [ExecutionFactItemComponent, RecordExecutionFactComponent],
   templateUrl: './execution-facts-list.component.html',
-  styleUrl: './execution-facts-list.component.css',
+  styleUrl: './execution-facts-list.component.scss',
 })
 export class ExecutionFactsListComponent {
   executionFacts = new Array<ExecutionFact>();

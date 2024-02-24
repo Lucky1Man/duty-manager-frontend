@@ -9,6 +9,6 @@ import { RegistrationFormComponent } from '../registration-form/registration-for
   standalone: true,
   imports: [MatTabsModule, MatDialogContent, LoginFormComponent, RegistrationFormComponent],
   templateUrl: './authentication.component.html',
-  styleUrl: './authentication.component.css',
+  styleUrl: './authentication.component.scss',
 })
 export class AuthenticationComponent {}

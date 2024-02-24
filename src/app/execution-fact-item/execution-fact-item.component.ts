@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [MatCardModule, MatButtonModule, CommonModule],
   templateUrl: './execution-fact-item.component.html',
-  styleUrl: './execution-fact-item.component.css',
+  styleUrl: './execution-fact-item.component.scss',
 })
 export class ExecutionFactItemComponent {
   @Input() executionFact = new ExecutionFact();

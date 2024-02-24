@@ -12,7 +12,7 @@ import { Events } from '../../shared/duty-manager-events';
   standalone: true,
   imports: [MatToolbarModule, MatButtonModule, MatIconModule, CommonModule],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css',
+  styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
   private _participant?: Participant;

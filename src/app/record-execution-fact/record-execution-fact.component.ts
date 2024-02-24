@@ -25,7 +25,7 @@ import { Events } from '../../shared/duty-manager-events';
     MatCheckboxModule,
   ],
   templateUrl: './record-execution-fact.component.html',
-  styleUrl: './record-execution-fact.component.css',
+  styleUrl: './record-execution-fact.component.scss',
 })
 export class RecordExecutionFactComponent {
   senderDescription = new FormControl('', [Validators.required]);

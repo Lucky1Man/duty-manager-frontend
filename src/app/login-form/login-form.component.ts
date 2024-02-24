@@ -28,7 +28,7 @@ import { Events } from '../../shared/duty-manager-events';
     MatButtonModule,
   ],
   templateUrl: './login-form.component.html',
-  styleUrl: './login-form.component.css',
+  styleUrl: './login-form.component.scss',
 })
 export class LoginFormComponent {
   loginForm = new FormGroup({

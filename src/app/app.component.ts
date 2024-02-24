@@ -24,7 +24,7 @@ import { ExecutionFact } from '../shared/execution-fact';
     HeaderComponent,
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  styleUrl: './app.component.scss',
   providers: [NgEventBus, AxiosService, MatDialog, AuthenticationService],
 })
 export class AppComponent implements OnInit {

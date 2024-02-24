@@ -28,7 +28,7 @@ import { Events } from '../../shared/duty-manager-events';
     MatButtonModule,
   ],
   templateUrl: './registration-form.component.html',
-  styleUrl: './registration-form.component.css',
+  styleUrl: './registration-form.component.scss',
 })
 export class RegistrationFormComponent {
   hide = true;
