@@ -1,15 +1,10 @@
-<div class="d-flex flex-column execution-fact-list-container">
-  <div class="execution-fact-items">
-    @for (executionFact of executionFacts; track $index) {
-    <div class="execution-fact-item">
-      <execution-fact-item
-        [executionFact]="executionFact"
-        (finishExecutionFact)="finishExecutionFact($event)"
-      ></execution-fact-item>
-    </div>
-    }
+<div>
+  @for (executionFact of executionFacts; track $index) {
+  <div class="execution-fact-item">
+    <execution-fact-item
+      [executionFact]="executionFact"
+      (finishExecutionFact)="finishExecutionFact($event)"
+    ></execution-fact-item>
   </div>
-  <div class="p-2 record-execution-fact">
-    <record-execution-fact></record-execution-fact>
-  </div>
+  }
 </div>

@@ -1,0 +1,10 @@
+.execution-facts-container {
+    min-height: 100%;
+}
+
+.execution-fact-list {
+    flex-grow: 1;
+    max-height: 74vh;
+    overflow: auto;
+    padding-right: 10px;
+  }
