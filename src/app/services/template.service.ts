@@ -29,9 +29,9 @@ export class TemplateService {
 
   fetchTemplates() {
     this.axios
-      .request('get', 'duties')
-      .then((returnedDuties) => {
-        this.templatesSubject.next(returnedDuties.data);
+      .request('get', 'templates')
+      .then((returnedTemplates) => {
+        this.templatesSubject.next(returnedTemplates.data);
       })
       .catch((error: AxiosError<any, any>) => this.alertUser(error));
   }

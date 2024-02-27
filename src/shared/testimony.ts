@@ -4,7 +4,7 @@ export class Testimony {
     public readonly witnessId: string,
     public readonly witnessFullName: string,
     public readonly executionFactId: string,
-    public readonly dutyName: string,
+    public readonly templateName: string,
     public readonly timestamp: string
   ) {}
 }

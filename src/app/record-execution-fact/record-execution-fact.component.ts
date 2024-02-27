@@ -10,9 +10,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { NgEventBus } from 'ng-event-bus';
 import { Template } from '../../shared/template';
-import { Events } from '../../shared/duty-manager-events';
 import { ExecutionFactService } from '../services/execution-fact.service';
 import { TemplateService } from '../services/template.service';
 
@@ -64,7 +62,7 @@ export class RecordExecutionFactComponent {
     }
     if (this.senderDescription.value && this.senderDescription.valid) {
       this.factService.registerExecutionFact({
-        dutyId: templateId,
+        templateId: templateId,
         description: this.senderDescription.value,
         instant: Boolean(this.senderInstant.value),
       });

@@ -7,7 +7,7 @@ export class ExecutionFact {
     public readonly finishTime: Date = new Date(),
     public readonly executorFullName: string ='',
     public readonly executorId: string ='',
-    public readonly dutyName: string ='',
+    public readonly templateName: string ='',
     public readonly testimonies: Testimony[] = [],
     public readonly description: string ='' 
   ) {}

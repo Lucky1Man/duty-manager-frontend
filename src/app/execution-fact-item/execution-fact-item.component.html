@@ -21,8 +21,8 @@
         >
         }
       </div>
-      @if(executionFact.dutyName) {
-      <span>Template name: {{ executionFact.dutyName }}</span>
+      @if(executionFact.templateName) {
+      <span>Template name: {{ executionFact.templateName }}</span>
       }
       <mat-chip-set aria-label="Testimonies">
         @for(testimony of executionFact.testimonies; track $index) {

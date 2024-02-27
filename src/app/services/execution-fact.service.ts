@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AxiosError } from 'axios';
 import { NgEventBus } from 'ng-event-bus';
+import { Subject, Subscription } from 'rxjs';
 import { Events } from '../../shared/duty-manager-events';
 import { ExecutionFact } from '../../shared/execution-fact';
 import { AxiosService } from './axios.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { AxiosError, AxiosResponse } from 'axios';
-import { Subject, Subscription } from 'rxjs';
 
 type NewExecutionFactsCallback = (facts: ExecutionFact[]) => void;
 
 type RecordExecutionFact = {
-  dutyId: string;
+  templateId: string;
   description: string;
   instant: boolean;
 };
