@@ -1,8 +1,14 @@
+@import url(../variables.scss);
+
 .app-root {
     height: 100%;
-    padding-bottom: 10px;
 }
 
 .container {
+    height: 100%;
+}
+
+.wrapper {
     flex-grow: 1;
+    padding-bottom: 10px;
 }

@@ -3,8 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import { Participant } from '../shared/participant';
-import { AuthenticationComponent } from './authentication/authentication.component';
+import { Participant } from '../../shared/participant';
+import { AuthenticationComponent } from '../authentication/authentication.component';
 
 @Injectable({
   providedIn: 'root',

@@ -3,8 +3,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { AxiosError } from 'axios';
 import { MetaData, NgEventBus } from 'ng-event-bus';
-import { Events } from '../shared/duty-manager-events';
-import { Participant } from '../shared/participant';
+import { Events } from '../../shared/duty-manager-events';
+import { Participant } from '../../shared/participant';
 import { AxiosService } from './axios.service';
 
 @Injectable({
@@ -33,6 +33,8 @@ export class AuthenticationService {
   }
 
   private login(credentials: any) {
+    this.axios.setParticipant(null);
+    this.eventBus.cast(Events.LOGGED_OUT);
     this.axios
       .request('post', 'auth/jwt', {
         email: credentials.login,

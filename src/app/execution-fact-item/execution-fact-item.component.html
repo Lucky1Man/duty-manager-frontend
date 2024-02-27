@@ -1,26 +1,41 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title
-      >Executor: {{ executionFact.executorFullName }}</mat-card-title
-    >
+    <mat-card-title>
+      <div>Executor: {{ executionFact.executorFullName }}</div>
+    </mat-card-title>
   </mat-card-header>
   <mat-card-content>
     <div class="description">
       <span>Description: {{ executionFact.description }}</span>
-      @if(executionFact.finishTime != null) {
-      <span>Duty name: {{ executionFact.dutyName }}</span>
-      }
       <div>
-        <span>Started at: {{ executionFact.startTime }}</span>
+        <span
+          >Started at:
+          {{ executionFact.startTime | date : "EEEE, MM/dd/y, hh:mm:ss" }}</span
+        >
         @if(executionFact.finishTime !== null) {
-        <span>Ended at: {{ executionFact.finishTime }}</span>
+        <span
+          >Ended at:
+          {{
+            executionFact.finishTime | date : "EEEE, MM/dd/y, hh:mm:ss"
+          }}</span
+        >
         }
       </div>
+      @if(executionFact.dutyName) {
+      <span>Template name: {{ executionFact.dutyName }}</span>
+      }
+      <mat-chip-set aria-label="Testimonies">
+        @for(testimony of executionFact.testimonies; track $index) {
+          <mat-chip>
+            <a href="#">{{testimony.witnessFullName}}</a>
+          </mat-chip>
+        }
+      </mat-chip-set>
     </div>
   </mat-card-content>
   <mat-card-actions>
     @if(executionFact.finishTime === null) {
-    <button mat-button>Finish</button>
+    <button type="button" mat-button (click)="finish()">Finish</button>
     }
   </mat-card-actions>
 </mat-card>

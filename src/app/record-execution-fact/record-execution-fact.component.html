@@ -1,42 +1,45 @@
 <form (submit)="$event.preventDefault(); recordExecutionFact()">
-    <mat-chip-listbox
-      aria-label="Fish selection"
-      (change)="setExecutionFactNewParent($event)"
+  <mat-chip-listbox aria-label="Templates selection">
+    <mat-chip-option
+      *ngFor="let template of templates | keyvalue"
+      (selectionChange)="selectionChanged($event)"
+      id="{{ template.key }}"
     >
-      <mat-chip-option *ngFor="let duty of duties | keyvalue">
-        {{ duty.key }}
-      </mat-chip-option>
-    </mat-chip-listbox>
-    <div class="d-flex">
-      <mat-form-field class="form-field">
-        <mat-label>Enter description</mat-label>
-        <input
-          matInput
-          placeholder="Some descriptive description"
-          [formControl]="senderDescription"
-          required
-        />
-        <button
-          type="button"
-          mat-icon-button
-          matSuffix
-          (click)="senderDescription.setValue('')"
-          [attr.aria-label]="'Clear description'"
-          [attr.aria-pressed]="false"
-        >
-          <mat-icon>clear</mat-icon>
-        </button>
-        @if (senderDescription.invalid) {
-        <mat-error>{{ getErrorMessage() }}</mat-error>
-        }
-      </mat-form-field>
-      <section class="instant-section">
-        <mat-checkbox [formControl]="senderInstant"
-          ><span class="checkbox-instant">Instant</span></mat-checkbox
-        >
-      </section>
-    </div>
-    <div class="d-flex justify-content-center">
-      <button type="submit" mat-raised-button color="primary">Record execution fact</button>
-    </div>
-  </form>
+      {{ template.key }}
+    </mat-chip-option>
+  </mat-chip-listbox>
+  <div class="d-flex">
+    <mat-form-field class="form-field">
+      <mat-label>Enter description</mat-label>
+      <input
+        matInput
+        placeholder="Some descriptive description"
+        [formControl]="senderDescription"
+        required
+      />
+      <button
+        type="button"
+        mat-icon-button
+        matSuffix
+        (click)="senderDescription.setValue('')"
+        [attr.aria-label]="'Clear description'"
+        [attr.aria-pressed]="false"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+      @if (senderDescription.invalid) {
+      <mat-error>{{ getErrorMessage() }}</mat-error>
+      }
+    </mat-form-field>
+    <section class="instant-section">
+      <mat-checkbox [formControl]="senderInstant"
+        ><span class="checkbox-instant">Instant</span></mat-checkbox
+      >
+    </section>
+  </div>
+  <div class="d-flex justify-content-center">
+    <button type="submit" mat-raised-button color="primary">
+      Record execution fact
+    </button>
+  </div>
+</form>

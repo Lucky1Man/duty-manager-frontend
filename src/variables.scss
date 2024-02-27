@@ -1,0 +1,19 @@
+@use "@angular/material" as mat;
+@include mat.core();
+
+$primary-palette: mat.define-palette(mat.$indigo-palette);
+$accent-palette: mat.define-palette(mat.$pink-palette);
+$warn-palette: mat.define-palette(mat.$red-palette);
+
+$colors: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900;
+@each $color in $colors {
+    .primary-#{$color} {
+        background-color: mat.get-color-from-palette($primary-palette, $color)
+    }
+    .accent-#{$color} {
+        background-color: mat.get-color-from-palette($accent-palette, $color)
+    }
+    .warn-#{$color} {
+        background-color: mat.get-color-from-palette($warn-palette, $color)
+    }
+};

@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { ExecutionFactItemComponent } from '../execution-fact-item/execution-fact-item.component';
-import { RecordExecutionFactComponent } from '../record-execution-fact/record-execution-fact.component';
-import { MetaData, NgEventBus } from 'ng-event-bus';
-import { Events } from '../../shared/duty-manager-events';
 import { ExecutionFact } from '../../shared/execution-fact';
+import { ExecutionFactItemComponent } from '../execution-fact-item/execution-fact-item.component';
+import { ExecutionFactService } from '../services/execution-fact.service';
+import { RecordExecutionFactComponent } from '../record-execution-fact/record-execution-fact.component';
 
 @Component({
   selector: 'execution-facts-list',
@@ -13,17 +12,15 @@ import { ExecutionFact } from '../../shared/execution-fact';
   styleUrl: './execution-facts-list.component.scss',
 })
 export class ExecutionFactsListComponent {
-  executionFacts = new Array<ExecutionFact>();
-  constructor(private eventBus: NgEventBus) {
-    eventBus
-      .on(Events.EXECUTION_FACTS_FETCHED)
-      .subscribe((facts: MetaData<any>) =>
-        this.setExecutionFacts(facts.data as ExecutionFact[])
-      );
-    eventBus.cast(Events.FETCH_EXECUTION_FACTS);
+  executionFacts: ExecutionFact[] = new Array<ExecutionFact>();
+  constructor(private factService: ExecutionFactService) {
+    factService.subscribeToNewExecutionFacts((facts) => {
+      this.executionFacts = facts;
+    });
+    factService.fetchExecutionFacts();
   }
 
-  private setExecutionFacts(facts: ExecutionFact[]) {
-    this.executionFacts = facts;
+  finishExecutionFact(id: string) {
+    this.factService.finishExecutionFact(id)
   }
 }

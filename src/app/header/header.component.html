@@ -1,14 +1,14 @@
 <header>
-  <mat-toolbar class="d-flex justify-content-around">
+  <mat-toolbar class="d-flex justify-content-around" color="primary">
     <button mat-icon-button>
       <mat-icon>menu</mat-icon>
     </button>
-    <a href="#" routerLink="" style="color: black; text-decoration: none"
+    <a href="#" routerLink="" style="color: white; text-decoration: none"
       >Duty manager</a
     >
     <div>
       <span *ngIf="participant !== undefined">{{ participant.fullName }}</span>
-      <button mat-raised-button class="ms-2" (click)="logout()">Logout</button>
+      <button mat-raised-button class="ms-2" (click)="logout()" color="accent">Logout</button>
     </div>
   </mat-toolbar>
 </header>
