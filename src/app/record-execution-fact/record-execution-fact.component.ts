@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Template } from '../../shared/template';
 import { ExecutionFactService } from '../services/execution-fact.service';
 import { TemplateService } from '../services/template.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'record-execution-fact',
@@ -30,25 +31,38 @@ import { TemplateService } from '../services/template.service';
   templateUrl: './record-execution-fact.component.html',
   styleUrl: './record-execution-fact.component.scss',
 })
-export class RecordExecutionFactComponent {
+export class RecordExecutionFactComponent implements OnDestroy {
+  private subscriptions: Subscription[] = [];
   senderDescription = new FormControl('', [Validators.required]);
   senderInstant = new FormControl('');
 
-  descriptions = new Set<string>();
-  templates = new Map<string, Template>();
-  selectedTemplate: Template | undefined;
+  private descriptions = new Set<string>();
+  protected templates = new Map<string, Template>();
+  private selectedTemplate: Template | undefined;
 
   constructor(
-    private templatesService: TemplateService,
+    templatesService: TemplateService,
     private factService: ExecutionFactService
   ) {
-    templatesService.subscribeToNewTemplates((templates) => this.setTemplates(templates));
+    this.subscriptions.push(
+      templatesService.subscribeToNewTemplates((templates) =>
+        this.setTemplates(templates)
+      )
+    );
     templatesService.fetchTemplates();
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
   private setTemplates(templates: Template[]) {
-    templates.forEach((template) => this.templates.set(template.name, template));
-    this.templates.forEach((template) => this.descriptions.add(template.description));
+    templates.forEach((template) =>
+      this.templates.set(template.name, template)
+    );
+    this.templates.forEach((template) =>
+      this.descriptions.add(template.description)
+    );
   }
 
   getErrorMessage() {

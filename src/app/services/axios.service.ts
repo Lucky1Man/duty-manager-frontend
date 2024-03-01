@@ -10,8 +10,8 @@ import { AuthenticationComponent } from '../authentication/authentication.compon
   providedIn: 'root',
 })
 export class AxiosService {
-  loginFormOpened = false;
-  participant?: Participant;
+  private loginFormOpened = false;
+  private participant?: Participant;
 
   constructor(
     private dialog: MatDialog,

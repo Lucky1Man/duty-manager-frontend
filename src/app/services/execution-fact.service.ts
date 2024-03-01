@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AxiosError } from 'axios';
@@ -24,32 +25,43 @@ export class ExecutionFactService {
   constructor(
     private axios: AxiosService,
     private snackBar: MatSnackBar,
+    private datePipe: DatePipe,
     eventBus: NgEventBus
   ) {
-    eventBus.on(Events.LOGGED_IN).subscribe(() => this.fetchExecutionFacts());
+    eventBus.on(Events.LOGGED_IN).subscribe(() => {
+      this.fetchExecutionFacts();
+    });
   }
 
-  subscribeToNewExecutionFacts(
-    callback: NewExecutionFactsCallback
-  ): Subscription {
+  subscribeToExecutionFacts(callback: NewExecutionFactsCallback): Subscription {
     return this.executionFactsSubject.asObservable().subscribe(callback);
   }
 
-  fetchExecutionFacts() {
-    this.axios
-      .request('get', 'execution-facts/active', null, {
-        from: '2024-01-23T07:30:47',
-        executorId: this.axios.getParticipant()?.id,
-      })
+  fetchExecutionFacts(
+    from: Date = new Date('1/1/2024'),
+    to?: Date,
+    executorId: string = this.axios.getParticipant()?.id ?? ''
+  ) {
+    const requestPromise = this.axios.request(
+      'get',
+      'execution-facts',
+      null,
+      {
+        from: this.datePipe.transform(from, 'yyyy-MM-ddTHH:mm:ss'),
+        executorId: executorId,
+        to: this.datePipe.transform(to, 'yyyy-MM-ddTHH:mm:ss'),
+      }
+    );
+    requestPromise
       .then((returnedTemplates) => {
         this.executionFactsSubject.next(returnedTemplates.data);
       })
       .catch((error: AxiosError<any, any>) => this.alertUser(error));
+    return requestPromise;
   }
 
   finishExecutionFact(id: string) {
-    this.axios
-      .request('post', 'execution-facts/finished', id)
+    this.axios.request('post', 'execution-facts/finished', id)
       .then(() => this.fetchExecutionFacts())
       .catch((error: AxiosError<any, any>) => this.alertUser(error));
   }
@@ -60,7 +72,12 @@ export class ExecutionFactService {
         ...recordExecutionFact,
         executorId: this.axios.getParticipant()?.id,
       })
-      .then(() => this.fetchExecutionFacts())
+      .then((response) => {
+        if (recordExecutionFact.instant === true) {
+          this.finishExecutionFact(response.data);
+        }
+        this.fetchExecutionFacts();
+      })
       .catch((error: AxiosError<any, any>) => this.alertUser(error));
   }
 

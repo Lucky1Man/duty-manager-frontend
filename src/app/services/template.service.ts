@@ -28,12 +28,14 @@ export class TemplateService {
   }
 
   fetchTemplates() {
-    this.axios
-      .request('get', 'templates')
+    const request = this.axios
+      .request('get', 'templates');
+    request
       .then((returnedTemplates) => {
         this.templatesSubject.next(returnedTemplates.data);
       })
       .catch((error: AxiosError<any, any>) => this.alertUser(error));
+    return request;
   }
 
   private alertUser(error: AxiosError<any, any>) {

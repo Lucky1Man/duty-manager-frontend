@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card [ngClass]="executionFact.finishTime !== null ? 'primary-300' : 'warn-300'">
   <mat-card-header>
     <mat-card-title>
       <div>Executor: {{ executionFact.executorFullName }}</div>
@@ -8,17 +8,15 @@
     <div class="description">
       <span>Description: {{ executionFact.description }}</span>
       <div>
-        <span
-          >Started at:
-          {{ executionFact.startTime | date : "EEEE, MM/dd/y, hh:mm:ss" }}</span
-        >
+        <div>
+          Started at:
+          {{ executionFact.startTime | date : "EEEE, MM/dd/y, hh:mm:ss" }}
+        </div>
         @if(executionFact.finishTime !== null) {
-        <span
-          >Ended at:
-          {{
-            executionFact.finishTime | date : "EEEE, MM/dd/y, hh:mm:ss"
-          }}</span
-        >
+        <div>
+          Ended at:
+          {{ executionFact.finishTime | date : "EEEE, MM/dd/y, hh:mm:ss" }}
+        </div>
         }
       </div>
       @if(executionFact.templateName) {
@@ -26,9 +24,9 @@
       }
       <mat-chip-set aria-label="Testimonies">
         @for(testimony of executionFact.testimonies; track $index) {
-          <mat-chip>
-            <a href="#">{{testimony.witnessFullName}}</a>
-          </mat-chip>
+        <mat-chip>
+          <a href="#">{{ testimony.witnessFullName }}</a>
+        </mat-chip>
         }
       </mat-chip-set>
     </div>

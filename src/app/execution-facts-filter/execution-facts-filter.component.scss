@@ -1,0 +1,54 @@
+@import url(../../variables.scss);
+
+.filter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.facts-paginator {
+    background: rgba(0, 0, 0, 0);
+}
+
+.primary-filters {
+    display: flex;
+    justify-content: right;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.facts-active-finish-toggle {
+    display: flex;
+}
+
+.filter-menu {
+    padding: 10px;
+}
+
+.filter-menu > * {
+    margin-bottom: 10px;
+}
+
+.apply-clear-buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
+.menu-inputs {
+    width: 100%;
+}
+
+.menu-state-filter {
+    display: none;
+    justify-content: center;
+}
+
+@media screen and (max-width: 780px) {
+    .primary-filters-state-filter {
+        display: none;
+    }
+
+    .menu-state-filter {
+        display: flex;
+    }
+}

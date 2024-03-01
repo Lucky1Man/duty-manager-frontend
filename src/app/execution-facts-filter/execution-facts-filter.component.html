@@ -1,0 +1,139 @@
+<div class="filter-container">
+  <button
+    mat-icon-button
+    [matMenuTriggerFor]="menu"
+    aria-label="Example icon-button with a menu"
+    [ngClass]="
+      activeFilters.length !== 0 || loadSettingsHaveChanged() ? 'accent-100' : ''
+    "
+  >
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <div class="filter-menu">
+      <mat-form-field (click)="$event.stopPropagation()" class="menu-inputs">
+        <mat-label>Template name</mat-label>
+        <input [formControl]="senderTemplateName" matInput />
+        <button
+          type="button"
+          mat-icon-button
+          matSuffix
+          (click)="senderTemplateName.setValue('')"
+          [attr.aria-label]="'Clear description'"
+          [attr.aria-pressed]="false"
+        >
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-form-field>
+      <div class="apply-clear-buttons">
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="updateFilters(); emitFilters()"
+        >
+          Apply filters
+        </button>
+        <button
+          mat-raised-button
+          [color] = "activeFilters.length !== 0 ? 'accent' : 'primary'"
+          type="button"
+          (click)="clearFilters(); emitFilters()"
+        >
+          Clear
+        </button>
+      </div>
+      <mat-divider></mat-divider>
+      <mat-form-field (click)="$event.stopPropagation()" class="menu-inputs">
+        <mat-label>From</mat-label>
+        <input
+          [formControl]="senderFromDate"
+          matInput
+          [matDatepicker]="fromPicker"
+          required
+        />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="fromPicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #fromPicker></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field (click)="$event.stopPropagation()" class="menu-inputs">
+        <mat-label>To</mat-label>
+        <input
+          [formControl]="senderToDate"
+          matInput
+          [matDatepicker]="toPicker"
+        />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="toPicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #toPicker></mat-datepicker>
+      </mat-form-field>
+      <div class="apply-clear-buttons">
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="updateLoadSetting(); emitLoadSettings()"
+        >
+          Load data
+        </button>
+        <button
+          mat-raised-button
+          [color] = "loadSettingsHaveChanged() ? 'accent' : 'primary'"
+          type="button"
+          (click)="clearLoadSettings(); emitLoadSettings()"
+        >
+          Clear
+        </button>
+      </div>
+      <div class="menu-state-filter">
+        <ng-container *ngTemplateOutlet="activeFinishFilter"></ng-container>
+      </div>
+    </div>
+  </mat-menu>
+  <div class="primary-filters">
+    <div class="primary-filters-state-filter">
+      <ng-container *ngTemplateOutlet="activeFinishFilter"></ng-container>
+    </div>
+
+    <mat-paginator
+      (page)="changePage($event)"
+      [length]="maxLength"
+      [pageSizeOptions]="pageOptions"
+      [pageSize]="pageSize"
+      [pageIndex]="calculateCurrentIndex()"
+      aria-label="Select page"
+      class="facts-paginator"
+    >
+    </mat-paginator>
+  </div>
+</div>
+
+<ng-template #activeFinishFilter>
+  <mat-button-toggle-group
+    name="execution-facts"
+    aria-label="Execution facts"
+    multiple
+    (change)="changeSelectedLoadState($event)"
+  >
+    <mat-button-toggle
+      value="active"
+      [checked]="stateFilter.active"
+      class="facts-active-finish-toggle"
+      id="active"
+      >Active</mat-button-toggle
+    >
+    <mat-button-toggle
+      value="finished"
+      [checked]="stateFilter.finished"
+      class="facts-active-finish-toggle"
+      id="finished"
+      >Finished</mat-button-toggle
+    >
+  </mat-button-toggle-group>
+</ng-template>

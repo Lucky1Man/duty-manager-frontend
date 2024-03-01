@@ -9,6 +9,8 @@ import { AuthenticationService } from './services/authentication.service';
 import { AxiosService } from './services/axios.service';
 import { ExecutionFactService } from './services/execution-fact.service';
 import { TemplateService } from './services/template.service';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -28,6 +30,8 @@ import { TemplateService } from './services/template.service';
     AuthenticationService,
     ExecutionFactService,
     TemplateService,
+    provideNativeDateAdapter(),
+    DatePipe
   ],
 })
 export class AppComponent implements OnInit {
