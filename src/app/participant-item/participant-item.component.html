@@ -1,15 +1,58 @@
 <div class="participant-item-container">
-  <mat-card class="participant-card">
-    <mat-card-header>
+  <mat-card class="participant-card warn-200">
+    <mat-card-header class="participant-card-header">
       <mat-card-title-group>
         <mat-card-title
           >{{ participant.fullName }} - {{ participant.email }}</mat-card-title
         >
       </mat-card-title-group>
     </mat-card-header>
-    <mat-card-content> </mat-card-content>
+    <mat-card-content class="participant-card-content">
+      @for(fact of executionFacts; track fact) {
+      <mat-card class="fact-card">
+        <mat-card-header class="fact-card-header">
+          <mat-card-title-group>
+            <mat-card-title class="fact-card-title"
+              ><span>{{
+                fact.templateName ? fact.templateName : fact.description
+              }}</span>
+            </mat-card-title>
+          </mat-card-title-group>
+        </mat-card-header>
+        <mat-card-actions class="fact-card-actions">
+          <div>
+            @if(userAllowedToFinishFact) {
+            <button
+              mat-raised-button
+              color="accent"
+              aria-label="'Finish ' + fact.description"
+              type="button"
+              (click)="finishExecutionFact(fact)"
+              class="fact-card-actions-item"
+            >
+              Finish
+            </button>
+            } @if(!userAllowedToFinishFact) {
+            <button
+              mat-raised-button
+              color="primary"
+              aria-label="'Finish ' + fact.description"
+              type="button"
+              (click)="testifyExecutionFact(fact)"
+              class="fact-card-actions-item"
+            >
+              Testify
+            </button>
+            }
+          </div>
+        </mat-card-actions>
+      </mat-card>
+      }
+    </mat-card-content>
     <mat-card-actions>
-      <button mat-button type="button" (click)="emitParticipantId()">View execution facts</button>
+      <button mat-button type="button" (click)="emitParticipantId()">
+        View execution facts
+      </button>
     </mat-card-actions>
   </mat-card>
 </div>

@@ -29,7 +29,8 @@ export class ExecutionFactService {
   async fetchExecutionFacts(
     from: Date = new Date('1/1/2024'),
     to?: Date,
-    executorId: string = this.axios.getParticipant()?.id ?? ''
+    executorId: string = this.axios.getParticipant()?.id ?? '',
+    pageSize?: number 
   ): Promise<ExecutionFact[]> {
     try {
       const response = await this.axios.request(
@@ -40,6 +41,32 @@ export class ExecutionFactService {
           from: this.datePipe.transform(from, 'yyyy-MM-ddTHH:mm:ss'),
           executorId: executorId,
           to: this.datePipe.transform(to, 'yyyy-MM-ddTHH:mm:ss'),
+          pageSize: pageSize
+        }
+      );
+      return response.data as ExecutionFact[];
+    } catch (error: any) {
+      this.alertUser(error);
+      return Promise.reject(error);
+    }
+  }
+
+  async fetchActiveExecutionFacts(
+    from: Date = new Date('1/1/2024'),
+    to?: Date,
+    executorId: string = this.axios.getParticipant()?.id ?? '',
+    pageSize?: number 
+  ): Promise<ExecutionFact[]> {
+    try {
+      const response = await this.axios.request(
+        'get',
+        'execution-facts/active',
+        null,
+        {
+          from: this.datePipe.transform(from, 'yyyy-MM-ddTHH:mm:ss'),
+          executorId: executorId,
+          to: this.datePipe.transform(to, 'yyyy-MM-ddTHH:mm:ss'),
+          pageSize: pageSize
         }
       );
       return response.data as ExecutionFact[];

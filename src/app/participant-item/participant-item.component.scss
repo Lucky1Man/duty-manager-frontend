@@ -1,7 +1,29 @@
+@import url(../../variables.scss);
+
 .participant-item-container {
     display: flex;
+    .participant-card {
+        max-width: 350px;
+        .participant-card-content {
+            padding: 7px;
+        }
+    }
 }
 
-.participant-card {
-    max-width: 400px;
+.fact-card {
+    margin: 7px;
+    .fact-card-header {
+        padding-top: 5px;
+        .fact-card-title {
+            max-width: 250px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            font-size: 16px;
+        }
+    }
+    .fact-card-actions {
+        .fact-card-actions-item {
+            font-size: 14px;
+        }
+    }
 }

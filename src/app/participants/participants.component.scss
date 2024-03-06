@@ -1,8 +1,15 @@
-.participants-container{
+.participants-container {
     display: flex;
-
+    flex-wrap: wrap;
+    overflow: auto;
+    height: 100%;
+    .participant-item {
+        margin: 10px;
+    }
 }
 
-.participant-item {
-    margin: 10px;
+@media screen and (max-width: 900px) {
+    .participants-container {
+        justify-content: center;
+    }
 }
