@@ -1,21 +1,23 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MetaData, NgEventBus } from 'ng-event-bus';
 import { Participant } from '../../shared/participant';
 import { Events } from '../../shared/duty-manager-events';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [MatToolbarModule, MatButtonModule, MatIconModule, CommonModule],
+  imports: [MatToolbarModule, MatButtonModule, MatIconModule, CommonModule, RouterModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
   private _participant?: Participant;
+  @Output() sideNawStateChanged = new EventEmitter<void>()
   constructor(private eventBus: NgEventBus) {
     eventBus
       .on(Events.LOGGED_IN)
@@ -41,5 +43,9 @@ export class HeaderComponent {
 
   get participant() {
     return this._participant;
+  }
+
+  toggleMenu() {
+    this.sideNawStateChanged.emit();
   }
 }

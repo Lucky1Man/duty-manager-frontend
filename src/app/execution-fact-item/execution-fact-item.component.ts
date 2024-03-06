@@ -5,11 +5,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { ExecutionFact } from '../../shared/execution-fact';
 import { ExecutionFactActionsShareService } from '../services/execution-fact-actions-share.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'execution-fact-item',
   standalone: true,
-  imports: [MatCardModule, MatButtonModule, CommonModule, MatChipsModule],
+  imports: [MatCardModule, MatButtonModule, CommonModule, MatChipsModule, RouterModule],
   templateUrl: './execution-fact-item.component.html',
   styleUrl: './execution-fact-item.component.scss',
 })

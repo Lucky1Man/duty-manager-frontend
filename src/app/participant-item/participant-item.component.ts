@@ -8,6 +8,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthenticationService } from '../services/authentication.service';
 import { subDays } from 'date-fns';
+import { NgScrollbarModule } from 'ngx-scrollbar';
+import { DatePipe } from '@angular/common';
 
 //This component has limitation, it is that if there was more than 200 facts in n day range,
 // the list of facts will not correctly show facts that need to be testified, where n is number of most recent days to be shown.
@@ -16,7 +18,7 @@ import { subDays } from 'date-fns';
 @Component({
   selector: 'participant-item',
   standalone: true,
-  imports: [MatCardModule, MatButtonModule, MatChipsModule, MatIconModule],
+  imports: [MatCardModule, MatButtonModule, MatChipsModule, MatIconModule, NgScrollbarModule, DatePipe],
   templateUrl: './participant-item.component.html',
   styleUrl: './participant-item.component.scss',
 })

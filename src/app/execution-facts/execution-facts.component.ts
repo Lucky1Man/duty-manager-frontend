@@ -44,12 +44,22 @@ export class ExecutionFactsComponent implements OnDestroy, OnInit {
 
   constructor(
     private factService: ExecutionFactService,
-    private authService: AuthenticationService,
-    private route: ActivatedRoute,
+    authService: AuthenticationService,
+    route: ActivatedRoute,
     factsLoadingParametersService: ExecutionFactsLoadParametersShareService,
     factsActionsService: ExecutionFactActionsShareService,
     eventBus: NgEventBus
   ) {
+    this.subscriptions.push(
+      route.queryParamMap.subscribe((params) => {
+        this.participantId = params.get('participant-id') ?? undefined;
+        this._userAllowedToChangeFacts = !(
+          this.participantId !== undefined &&
+          authService.getParticipant()?.id !== this.participantId
+        );
+        this.loadExecutionFacts();
+      })
+    );
     this.subscriptions.push(
       factsLoadingParametersService.onLoadParameters((parameters) => {
         this.parameters = parameters;
@@ -76,8 +86,9 @@ export class ExecutionFactsComponent implements OnDestroy, OnInit {
           .then(() => this.replaceExecutionFact(id))
       )
     );
-    this.loadExecutionFacts();
-    eventBus.on(Events.LOGGED_IN).subscribe(() => this.loadExecutionFacts());
+    this.subscriptions.push(
+      eventBus.on(Events.LOGGED_IN).subscribe(() => this.loadExecutionFacts())
+    );
   }
 
   private async loadExecutionFacts() {
@@ -100,19 +111,12 @@ export class ExecutionFactsComponent implements OnDestroy, OnInit {
     this._executionFacts.push(await this.factService.fetchExecutionFact(id));
   }
 
-  ngOnInit(): void {
-    this.participantId =
-      this.route.snapshot.queryParamMap.get('participant-id') ?? undefined;
-    if (
-      this.participantId !== undefined &&
-      this.authService.getParticipant()?.id !== this.participantId
-    ) {
-      this._userAllowedToChangeFacts = false;
-    }
-  }
-
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+  }
+
+  ngOnInit(): void {
+    this.loadExecutionFacts();
   }
 
   get executionFacts(): ExecutionFact[] {

@@ -1,16 +1,17 @@
 @import url(../variables.scss);
 
-.app-root {
+mat-drawer-container {
     height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.container {
-    height: 100%;
-}
-
-.wrapper {
-    flex-grow: 1;
-    overflow: auto;
+    .app-root {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        .wrapper {
+            flex-grow: 1;
+            overflow: auto;
+            .container {
+                height: 100%;
+            }
+        }
+    }
 }

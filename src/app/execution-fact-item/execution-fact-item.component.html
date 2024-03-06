@@ -23,30 +23,29 @@
       </div>
       @if(executionFact.templateName) {
       <span>Template name: {{ executionFact.templateName }}</span>
-      }
-      <div>Witnesses:</div> 
+      } @if(executionFact.testimonies.length > 0) {
+      <div>Witnesses:</div>
       <mat-chip-set aria-label="Testimonies">
         @for(testimony of executionFact.testimonies; track $index) {
         <mat-chip>
-          <a href="#">{{ testimony.witnessFullName }}</a>
+          <a
+            [routerLink]="['/execution-facts']"
+            [queryParams]="{ 'participant-id': testimony.witnessId }"
+            >{{ testimony.witnessFullName }}</a
+          >
         </mat-chip>
         }
       </mat-chip-set>
+      }
     </div>
   </mat-card-content>
-
+  @if(executionFact.finishTime === null || !userAllowedToChangeFacts) {
   <mat-card-actions>
-    @if(executionFact.finishTime === null) {
-    <button
-      type="button"
-      mat-button
-      (click)="finish()"
-      [disabled]="!userAllowedToChangeFacts"
-    >
-      Finish
-    </button>
+    @if(executionFact.finishTime === null && userAllowedToChangeFacts) {
+    <button type="button" mat-button (click)="finish()">Finish</button>
     } @if(!userAllowedToChangeFacts) {
     <button type="button" mat-button (click)="testify()">Testify</button>
     }
   </mat-card-actions>
+  }
 </mat-card>
