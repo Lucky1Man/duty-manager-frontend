@@ -11,6 +11,7 @@ import { ExecutionFactService } from './services/execution-fact.service';
 import { TemplateService } from './services/template.service';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
+import { ParticipantService } from './services/participant.service';
 
 @Component({
   selector: 'app-root',
@@ -30,6 +31,7 @@ import { DatePipe } from '@angular/common';
     AuthenticationService,
     ExecutionFactService,
     TemplateService,
+    ParticipantService,
     provideNativeDateAdapter(),
     DatePipe
   ],

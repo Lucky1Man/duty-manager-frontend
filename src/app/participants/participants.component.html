@@ -1,0 +1,10 @@
+<div class="participants-container">
+  @for(participant of participants; track $index) {
+  <div class="participant-item">
+    <participant-item
+      [participant]="participant"
+      (navigateToFactsPage)="navigateToParticipantsPage($event)"
+    ></participant-item>
+  </div>
+  }
+</div>

@@ -32,6 +32,10 @@ export class AuthenticationService {
     }
   }
 
+  getParticipant() {
+    return this.axios.getParticipant();
+  }
+
   private login(credentials: any) {
     this.axios.setParticipant(null);
     this.eventBus.cast(Events.LOGGED_OUT);

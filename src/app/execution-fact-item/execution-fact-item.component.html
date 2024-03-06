@@ -1,4 +1,6 @@
-<mat-card [ngClass]="executionFact.finishTime !== null ? 'primary-300' : 'warn-300'">
+<mat-card
+  [ngClass]="executionFact.finishTime !== null ? 'primary-300' : 'warn-300'"
+>
   <mat-card-header>
     <mat-card-title>
       <div>Executor: {{ executionFact.executorFullName }}</div>
@@ -22,6 +24,7 @@
       @if(executionFact.templateName) {
       <span>Template name: {{ executionFact.templateName }}</span>
       }
+      <div>Witnesses:</div> 
       <mat-chip-set aria-label="Testimonies">
         @for(testimony of executionFact.testimonies; track $index) {
         <mat-chip>
@@ -31,9 +34,19 @@
       </mat-chip-set>
     </div>
   </mat-card-content>
+
   <mat-card-actions>
     @if(executionFact.finishTime === null) {
-    <button type="button" mat-button (click)="finish()">Finish</button>
+    <button
+      type="button"
+      mat-button
+      (click)="finish()"
+      [disabled]="!userAllowedToChangeFacts"
+    >
+      Finish
+    </button>
+    } @if(!userAllowedToChangeFacts) {
+    <button type="button" mat-button (click)="testify()">Testify</button>
     }
   </mat-card-actions>
 </mat-card>

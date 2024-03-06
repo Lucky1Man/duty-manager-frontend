@@ -29,8 +29,8 @@ import { Subject, Subscription } from 'rxjs';
 import {
   ExecutionFactFilter,
   ExecutionFactLoadParameters,
-} from '../../shared/facts-filter-types';
-import { ExecutionFactsLoadSettingsShareService } from '../services/execution-facts-load-settings-share.service';
+} from '../../shared/execution-facts-types';
+import { ExecutionFactsLoadParametersShareService } from '../services/execution-facts-load-settings-share.service';
 
 @Injectable()
 export class MyCustomPaginatorIntl implements MatPaginatorIntl, OnDestroy {
@@ -44,10 +44,10 @@ export class MyCustomPaginatorIntl implements MatPaginatorIntl, OnDestroy {
   lastPageLabel = '';
   constructor(
     private datePipe: DatePipe,
-    factsLoadSettingsService: ExecutionFactsLoadSettingsShareService
+    factsLoadSettingsService: ExecutionFactsLoadParametersShareService
   ) {
     this.subscriptions.push(
-      factsLoadSettingsService.subscribeToLoadSettings((settings) => {
+      factsLoadSettingsService.onLoadParameters((settings) => {
         this.activeLoadSettings = settings;
         this.changes.next();
       })
@@ -131,10 +131,10 @@ export class ExecutionFactsFilterComponent implements OnInit, OnDestroy {
   _pageSize = ExecutionFactsFilterComponent.DEFAULT_PAGE_SIZE;
 
   constructor(
-    private factsLoadSettingsService: ExecutionFactsLoadSettingsShareService
+    private factsLoadSettingsService: ExecutionFactsLoadParametersShareService
   ) {
     this.subscriptions.push(
-      this.factsLoadSettingsService.subscribeToLoadSettings((settings) => {
+      this.factsLoadSettingsService.onLoadParameters((settings) => {
         this.senderFromDate.setValue(settings.from);
         this.senderToDate.setValue(settings.to);
       })
@@ -147,7 +147,7 @@ export class ExecutionFactsFilterComponent implements OnInit, OnDestroy {
       pageIndex: 0,
       pageSize: this._pageSize,
     });
-    this.factsLoadSettingsService.updateLoadSettings(this.activeLoadSettings);
+    this.factsLoadSettingsService.nextLoadParameters(this.activeLoadSettings);
   }
 
   ngOnDestroy(): void {
@@ -184,7 +184,7 @@ export class ExecutionFactsFilterComponent implements OnInit, OnDestroy {
   }
 
   emitLoadSettings() {
-    this.factsLoadSettingsService.updateLoadSettings(this.activeLoadSettings);
+    this.factsLoadSettingsService.nextLoadParameters(this.activeLoadSettings);
   }
 
   clearLoadSettings() {
@@ -233,7 +233,7 @@ export class ExecutionFactsFilterComponent implements OnInit, OnDestroy {
       from: fromDate,
       to: toDate,
     };
-    this.factsLoadSettingsService.updateLoadSettings(this.activeLoadSettings);
+    this.factsLoadSettingsService.nextLoadParameters(this.activeLoadSettings);
   }
 
   getDaysOffset(page: PageEvent): number {

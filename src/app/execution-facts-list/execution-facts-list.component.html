@@ -3,11 +3,10 @@
   <div class="execution-fact-item">
     <execution-fact-item
       [executionFact]="executionFact"
-      (finishExecutionFact)="finishExecutionFact($event)"
+      [userAllowedToChangeFacts]="userAllowedToChangeFacts"
     ></execution-fact-item>
   </div>
-  }
-  @if(executionFacts.length === 0) {
-    <h2>No execution facts found for given filters.</h2> 
+  } @if(executionFacts.length === 0) {
+  <h2>No execution facts found for given filters.</h2>
   }
 </div>

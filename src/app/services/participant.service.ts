@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AxiosError } from 'axios';
-import { Template } from '../../shared/template';
+import { Participant } from '../../shared/participant';
 import { AxiosService } from './axios.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class TemplateService {
+export class ParticipantService {
   constructor(private axios: AxiosService, private snackBar: MatSnackBar) {}
 
-  async fetchTemplates() : Promise<Template[]> {
+  async fetchParticipants(): Promise<Participant[]> {
     try {
-      const response = await this.axios.request('get', 'templates');
-      return response.data as Template[];
+      const response = await this.axios.request('get', 'participants');
+      return response.data as Participant[];
     } catch (error: any) {
-      this.alertUser(error)
+      this.alertUser(error);
       return Promise.reject(error);
     }
   }

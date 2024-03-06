@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ExecutionFactsLoadSettingsShareService } from './execution-facts-load-settings-share.service';
+import { ExecutionFactsLoadParametersShareService } from './execution-facts-load-settings-share.service';
 
 describe('ExecutionFactsLoadSettingsShareService', () => {
-  let service: ExecutionFactsLoadSettingsShareService;
+  let service: ExecutionFactsLoadParametersShareService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ExecutionFactsLoadSettingsShareService);
+    service = TestBed.inject(ExecutionFactsLoadParametersShareService);
   });
 
   it('should be created', () => {

@@ -2,83 +2,51 @@ import { DatePipe } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AxiosError } from 'axios';
-import { NgEventBus } from 'ng-event-bus';
-import { Subject, Subscription } from 'rxjs';
-import { Events } from '../../shared/duty-manager-events';
 import { ExecutionFact } from '../../shared/execution-fact';
 import { AxiosService } from './axios.service';
-
-type NewExecutionFactsCallback = (facts: ExecutionFact[]) => void;
-
-type RecordExecutionFact = {
-  templateId: string;
-  description: string;
-  instant: boolean;
-};
+import { RecordExecutionFact } from '../../shared/execution-facts-types';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ExecutionFactService {
-  private executionFactsSubject = new Subject<ExecutionFact[]>();
-
   constructor(
     private axios: AxiosService,
     private snackBar: MatSnackBar,
-    private datePipe: DatePipe,
-    eventBus: NgEventBus
-  ) {
-    eventBus.on(Events.LOGGED_IN).subscribe(() => {
-      this.fetchExecutionFacts();
-    });
+    private datePipe: DatePipe
+  ) {}
+
+  async fetchExecutionFact(id: string) {
+    try {
+      const response = await this.axios.request('get', `execution-facts/${id}`);
+      return response.data as ExecutionFact;
+    } catch (error: any) {
+      this.alertUser(error);
+      return Promise.reject(error);
+    }
   }
 
-  subscribeToExecutionFacts(callback: NewExecutionFactsCallback): Subscription {
-    return this.executionFactsSubject.asObservable().subscribe(callback);
-  }
-
-  fetchExecutionFacts(
+  async fetchExecutionFacts(
     from: Date = new Date('1/1/2024'),
     to?: Date,
     executorId: string = this.axios.getParticipant()?.id ?? ''
-  ) {
-    const requestPromise = this.axios.request(
-      'get',
-      'execution-facts',
-      null,
-      {
-        from: this.datePipe.transform(from, 'yyyy-MM-ddTHH:mm:ss'),
-        executorId: executorId,
-        to: this.datePipe.transform(to, 'yyyy-MM-ddTHH:mm:ss'),
-      }
-    );
-    requestPromise
-      .then((returnedTemplates) => {
-        this.executionFactsSubject.next(returnedTemplates.data);
-      })
-      .catch((error: AxiosError<any, any>) => this.alertUser(error));
-    return requestPromise;
-  }
-
-  finishExecutionFact(id: string) {
-    this.axios.request('post', 'execution-facts/finished', id)
-      .then(() => this.fetchExecutionFacts())
-      .catch((error: AxiosError<any, any>) => this.alertUser(error));
-  }
-
-  registerExecutionFact(recordExecutionFact: RecordExecutionFact) {
-    this.axios
-      .request('post', 'execution-facts', {
-        ...recordExecutionFact,
-        executorId: this.axios.getParticipant()?.id,
-      })
-      .then((response) => {
-        if (recordExecutionFact.instant === true) {
-          this.finishExecutionFact(response.data);
+  ): Promise<ExecutionFact[]> {
+    try {
+      const response = await this.axios.request(
+        'get',
+        'execution-facts',
+        null,
+        {
+          from: this.datePipe.transform(from, 'yyyy-MM-ddTHH:mm:ss'),
+          executorId: executorId,
+          to: this.datePipe.transform(to, 'yyyy-MM-ddTHH:mm:ss'),
         }
-        this.fetchExecutionFacts();
-      })
-      .catch((error: AxiosError<any, any>) => this.alertUser(error));
+      );
+      return response.data as ExecutionFact[];
+    } catch (error: any) {
+      this.alertUser(error);
+      return Promise.reject(error);
+    }
   }
 
   private alertUser(error: AxiosError<any, any>) {
@@ -89,5 +57,45 @@ export class ExecutionFactService {
         duration: 10000,
       }
     );
+  }
+
+  async finishExecutionFact(id: string): Promise<void> {
+    try {
+      await this.axios.request('post', 'execution-facts/finished', id);
+    } catch (error: any) {
+      this.alertUser(error);
+      return Promise.reject(error);
+    }
+  }
+
+  async registerExecutionFact(
+    recordExecutionFact: RecordExecutionFact
+  ): Promise<string> {
+    try {
+      const response = await this.axios.request('post', 'execution-facts', {
+        ...recordExecutionFact,
+        executorId: this.axios.getParticipant()?.id,
+      });
+      if (recordExecutionFact.instant === true) {
+        await this.finishExecutionFact(response.data);
+      }
+      return response.data;
+    } catch (error: any) {
+      this.alertUser(error);
+      return Promise.reject(error);
+    }
+  }
+
+  async testifyExecutionFact(factId: string): Promise<string> {
+    try {
+      const response = await this.axios.request(
+        'post',
+        `execution-facts/${factId}/testimonies`
+      );
+      return response.data;
+    } catch (error: any) {
+      this.alertUser(error);
+      return Promise.reject(error);
+    }
   }
 }

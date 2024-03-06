@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { ExecutionFact } from '../../shared/execution-fact';
+import { ExecutionFactActionsShareService } from '../services/execution-fact-actions-share.service';
 
 @Component({
   selector: 'execution-fact-item',
@@ -14,8 +15,12 @@ import { ExecutionFact } from '../../shared/execution-fact';
 })
 export class ExecutionFactItemComponent {
   @Input() executionFact = new ExecutionFact();
-  @Output() finishExecutionFact = new EventEmitter<string>();
+  @Input() userAllowedToChangeFacts = true;
+  constructor(private factsActionsService: ExecutionFactActionsShareService) {}
   finish() {
-    this.finishExecutionFact.emit(this.executionFact.id);
+    this.factsActionsService.nextFactFinish(this.executionFact.id);
+  }
+  testify() {
+    this.factsActionsService.nextTestimony(this.executionFact.id);
   }
 }

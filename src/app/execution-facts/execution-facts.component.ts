@@ -1,17 +1,21 @@
-import { Component, Input, OnDestroy } from '@angular/core';
-import { ExecutionFactsListComponent } from '../execution-facts-list/execution-facts-list.component';
-import { RecordExecutionFactComponent } from '../record-execution-fact/record-execution-fact.component';
-import { ExecutionFactsFilterComponent } from '../execution-facts-filter/execution-facts-filter.component';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
-import { ExecutionFactService } from '../services/execution-fact.service';
+import { Subscription } from 'rxjs';
 import { ExecutionFact } from '../../shared/execution-fact';
 import {
   ExecutionFactFilter,
   ExecutionFactLoadParameters,
-} from '../../shared/facts-filter-types';
-import { Subscription } from 'rxjs';
-import { PageEvent } from '@angular/material/paginator';
-import { ExecutionFactsLoadSettingsShareService } from '../services/execution-facts-load-settings-share.service';
+} from '../../shared/execution-facts-types';
+import { ExecutionFactsFilterComponent } from '../execution-facts-filter/execution-facts-filter.component';
+import { ExecutionFactsListComponent } from '../execution-facts-list/execution-facts-list.component';
+import { RecordExecutionFactComponent } from '../record-execution-fact/record-execution-fact.component';
+import { ExecutionFactService } from '../services/execution-fact.service';
+import { ExecutionFactsLoadParametersShareService } from '../services/execution-facts-load-settings-share.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthenticationService } from '../services/authentication.service';
+import { NgEventBus } from 'ng-event-bus';
+import { Events } from '../../shared/duty-manager-events';
+import { ExecutionFactActionsShareService } from '../services/execution-fact-actions-share.service';
 
 @Component({
   selector: 'app-execution-facts',
@@ -22,39 +26,89 @@ import { ExecutionFactsLoadSettingsShareService } from '../services/execution-fa
     ExecutionFactsFilterComponent,
     MatDividerModule,
   ],
-  providers: [ExecutionFactsLoadSettingsShareService],
+  providers: [
+    ExecutionFactsLoadParametersShareService,
+    ExecutionFactActionsShareService,
+  ],
   templateUrl: './execution-facts.component.html',
   styleUrl: './execution-facts.component.scss',
 })
-export class ExecutionFactsComponent implements OnDestroy {
+export class ExecutionFactsComponent implements OnDestroy, OnInit {
+  private participantId?: string;
   private subscriptions: Subscription[] = [];
   private _executionFacts: ExecutionFact[] = [];
   private _executionFactFilters: ExecutionFactFilter[] = [];
   private _executionFactsLoadParameters?: ExecutionFactLoadParameters;
   private _executionFactsStateFilter: ExecutionFactFilter = () => true;
+  private _userAllowedToChangeFacts = true;
 
   constructor(
     private factService: ExecutionFactService,
-    factsLoadingSettings: ExecutionFactsLoadSettingsShareService
+    private authService: AuthenticationService,
+    private route: ActivatedRoute,
+    factsLoadingParametersService: ExecutionFactsLoadParametersShareService,
+    factsActionsService: ExecutionFactActionsShareService,
+    eventBus: NgEventBus
   ) {
     this.subscriptions.push(
-      factService.subscribeToExecutionFacts((facts) => {
-        this._executionFacts = facts;
+      factsLoadingParametersService.onLoadParameters((parameters) => {
+        this.parameters = parameters;
       })
     );
     this.subscriptions.push(
-      factsLoadingSettings.subscribeToLoadSettings((setting) => {
-        this.parameters = setting;
+      factsActionsService.onCreate((recordFact) =>
+        this.factService
+          .registerExecutionFact(recordFact)
+          .then((id) => this.addExecutionFact(id))
+      )
+    );
+    this.subscriptions.push(
+      factsActionsService.onTestimony((id) => {
+        this.factService
+          .testifyExecutionFact(id)
+          .then(() => this.replaceExecutionFact(id));
       })
     );
-    this.fetchExecutionFacts();
+    this.subscriptions.push(
+      factsActionsService.onFactFinish((id) =>
+        this.factService
+          .finishExecutionFact(id)
+          .then(() => this.replaceExecutionFact(id))
+      )
+    );
+    this.loadExecutionFacts();
+    eventBus.on(Events.LOGGED_IN).subscribe(() => this.loadExecutionFacts());
   }
 
-  private async fetchExecutionFacts() {
-    this.factService.fetchExecutionFacts(
+  private async loadExecutionFacts() {
+    this._executionFacts = await this.factService.fetchExecutionFacts(
       this._executionFactsLoadParameters?.from,
-      this._executionFactsLoadParameters?.to
+      this._executionFactsLoadParameters?.to,
+      this.participantId
     );
+  }
+
+  private async replaceExecutionFact(id: string) {
+    this._executionFacts.splice(
+      this._executionFacts.findIndex((fact) => fact.id === id),
+      1,
+      await this.factService.fetchExecutionFact(id)
+    );
+  }
+
+  private async addExecutionFact(id: string) {
+    this._executionFacts.push(await this.factService.fetchExecutionFact(id));
+  }
+
+  ngOnInit(): void {
+    this.participantId =
+      this.route.snapshot.queryParamMap.get('participant-id') ?? undefined;
+    if (
+      this.participantId !== undefined &&
+      this.authService.getParticipant()?.id !== this.participantId
+    ) {
+      this._userAllowedToChangeFacts = false;
+    }
   }
 
   ngOnDestroy(): void {
@@ -79,6 +133,10 @@ export class ExecutionFactsComponent implements OnDestroy {
 
   set parameters(parameters: ExecutionFactLoadParameters) {
     this._executionFactsLoadParameters = parameters;
-    this.fetchExecutionFacts();
+    this.loadExecutionFacts();
+  }
+
+  get userAllowedToChangeFacts() {
+    return this._userAllowedToChangeFacts;
   }
 }

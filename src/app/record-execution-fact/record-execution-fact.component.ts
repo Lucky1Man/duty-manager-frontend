@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -10,10 +10,11 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { NgEventBus } from 'ng-event-bus';
+import { Events } from '../../shared/duty-manager-events';
 import { Template } from '../../shared/template';
-import { ExecutionFactService } from '../services/execution-fact.service';
+import { ExecutionFactActionsShareService } from '../services/execution-fact-actions-share.service';
 import { TemplateService } from '../services/template.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'record-execution-fact',
@@ -31,8 +32,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './record-execution-fact.component.html',
   styleUrl: './record-execution-fact.component.scss',
 })
-export class RecordExecutionFactComponent implements OnDestroy {
-  private subscriptions: Subscription[] = [];
+export class RecordExecutionFactComponent {
   senderDescription = new FormControl('', [Validators.required]);
   senderInstant = new FormControl('');
 
@@ -41,22 +41,16 @@ export class RecordExecutionFactComponent implements OnDestroy {
   private selectedTemplate: Template | undefined;
 
   constructor(
-    templatesService: TemplateService,
-    private factService: ExecutionFactService
+    private templatesService: TemplateService,
+    private factsActionsService: ExecutionFactActionsShareService,
+    eventBus: NgEventBus
   ) {
-    this.subscriptions.push(
-      templatesService.subscribeToNewTemplates((templates) =>
-        this.setTemplates(templates)
-      )
-    );
-    templatesService.fetchTemplates();
+    eventBus.on(Events.LOGGED_IN).subscribe(() => this.loadTemplates());
+    this.loadTemplates();
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
-  }
-
-  private setTemplates(templates: Template[]) {
+  private async loadTemplates() {
+    const templates = await this.templatesService.fetchTemplates();
     templates.forEach((template) =>
       this.templates.set(template.name, template)
     );
@@ -75,7 +69,7 @@ export class RecordExecutionFactComponent implements OnDestroy {
       templateId = this.selectedTemplate.id;
     }
     if (this.senderDescription.value && this.senderDescription.valid) {
-      this.factService.registerExecutionFact({
+      this.factsActionsService.nextCreate({
         templateId: templateId,
         description: this.senderDescription.value,
         instant: Boolean(this.senderInstant.value),

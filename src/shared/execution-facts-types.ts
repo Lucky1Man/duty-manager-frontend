@@ -8,3 +8,9 @@ export type ExecutionFactLoadParameters = {
 export type ExecutionFactFilter = (executionFact: ExecutionFact) => boolean;
 
 export type FactsLoadParametersApplier = (loadParams: ExecutionFactLoadParameters) => void;
+
+export type RecordExecutionFact = {
+  templateId: string;
+  description: string;
+  instant: boolean;
+};
