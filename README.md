@@ -1,4 +1,5 @@
 # DutyManagerFrontend
+## Link to backend: https://github.com/Lucky1Man/duty-manager-backend
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.1.2.
 
