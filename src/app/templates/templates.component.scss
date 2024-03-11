@@ -1,0 +1,20 @@
+.templates-container {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    position: relative;
+    .templates-content {
+        display: flex;
+        flex-wrap: wrap;
+        flex-grow: 1;
+        overflow-y: auto;
+        padding-bottom: 70px;
+    }
+    .templates-footer {
+        margin-bottom: 10px;
+        position: absolute;
+        bottom: 0;
+        right: 1.2rem;
+        z-index: 1;
+    }
+}

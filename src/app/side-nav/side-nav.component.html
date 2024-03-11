@@ -1,3 +1,31 @@
 <div class="side-nav-container">
-    
+  <div class="side-nav-menu-container">
+    <div class="side-nav-menu-header">
+      <a routerLink="/" class="side-nav-logo">Duty manager</a>
+    </div>
+    <div class="side-nav-menu">
+      <div>
+        <a mat-raised-button routerLink="/" color="primary"
+          >Participants</a
+        >
+      </div>
+      <div>
+        <a mat-raised-button routerLink="/execution-facts" color="primary"
+          >My execution facts</a
+        >
+      </div>
+      <div>
+        <a mat-raised-button routerLink="/login" color="primary"
+          >Login / Register</a
+        >
+      </div>
+      @if(userRole?.name === 'ADMIN') {
+      <div>
+        <a mat-raised-button routerLink="/templates" color="primary"
+          >Manage templates</a
+        >
+      </div>
+      }
+    </div>
+  </div>
 </div>

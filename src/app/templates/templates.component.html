@@ -1,0 +1,15 @@
+<div class="templates-container">
+  <div class="templates-header">
+    <templates-filter
+      [numberOfTemplates]="numberOfTemplates"
+      (filtersChange)="filters = $event"
+    ></templates-filter>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="templates-content">
+    <templates-list [templates]="templates"></templates-list>
+  </div>
+  <div class="templates-footer">
+    <create-template></create-template>
+  </div>
+</div>

@@ -3,12 +3,12 @@
     <button type="button" mat-icon-button (click)="toggleMenu()">
       <mat-icon>menu</mat-icon>
     </button>
-    <a routerLink="/" style="color: white; text-decoration: none"
-      >Duty manager</a
-    >
+    <a routerLink="/" class="logo">Duty manager</a>
     <div>
       <span *ngIf="participant !== undefined">{{ participant.fullName }}</span>
-      <button mat-raised-button class="ms-2" (click)="logout()" color="accent">Logout</button>
+      <button mat-raised-button class="ms-2" (click)="logout()" color="accent">
+        Logout
+      </button>
     </div>
   </mat-toolbar>
 </header>

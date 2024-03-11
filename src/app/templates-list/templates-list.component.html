@@ -1,0 +1,10 @@
+<div class="templates-list-container">
+  @for (template of templates; track $index) {
+  <div class="template-item">
+    <template-item [template]="template"></template-item>
+  </div>
+  }
+  @if(templates.length === 0) {
+    <h2>No templates found for given filters</h2>
+  }
+</div>

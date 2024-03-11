@@ -1,0 +1,13 @@
+.template-item-container {
+    width: 320px;
+    .template-update-section {
+        margin-top: 10px;
+        mat-form-field {
+            width: 100%;
+        }
+    }
+    .template-action {
+        margin-right: 5px;
+    }
+}
+

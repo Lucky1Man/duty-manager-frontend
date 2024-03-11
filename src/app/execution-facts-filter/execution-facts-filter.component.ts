@@ -33,7 +33,7 @@ import {
 import { ExecutionFactsLoadParametersShareService } from '../services/execution-facts-load-settings-share.service';
 
 @Injectable()
-export class MyCustomPaginatorIntl implements MatPaginatorIntl, OnDestroy {
+export class ExecutionFactPaginator implements MatPaginatorIntl, OnDestroy {
   private subscriptions: Subscription[] = [];
   activeLoadSettings?: ExecutionFactLoadParameters;
   changes: Subject<void> = new Subject<void>();
@@ -80,7 +80,7 @@ export class MyCustomPaginatorIntl implements MatPaginatorIntl, OnDestroy {
     CommonModule,
     MatDividerModule,
   ],
-  providers: [{ provide: MatPaginatorIntl, useClass: MyCustomPaginatorIntl }],
+  providers: [{ provide: MatPaginatorIntl, useClass: ExecutionFactPaginator }],
   templateUrl: './execution-facts-filter.component.html',
   styleUrl: './execution-facts-filter.component.scss',
 })

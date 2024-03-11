@@ -1,0 +1,35 @@
+<div class="create-template-container">
+  <mat-accordion>
+    <mat-expansion-panel hideToggle="true">
+      <mat-expansion-panel-header class="accent-300">
+        <mat-panel-title> Create new template </mat-panel-title>
+        <mat-icon>control_point</mat-icon>
+      </mat-expansion-panel-header>
+      <div class="create-template-content">
+        <div class="create-template-form">
+          <div>
+            <mat-form-field>
+              <mat-label>Enter template name</mat-label>
+              <input matInput placeholder="Some name" />
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field>
+              <mat-label>Enter description</mat-label>
+              <textarea
+                class="create-template-form-description"
+                matInput
+                placeholder="Some description"
+              ></textarea>
+            </mat-form-field>
+          </div>
+          <div class="create-template-form-button">
+            <button mat-raised-button type="button" color="primary">
+              Create
+            </button>
+          </div>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

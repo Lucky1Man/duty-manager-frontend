@@ -1,0 +1,10 @@
+.logo {
+    color: white;
+    text-decoration: none;
+}
+
+@media screen and (max-width: 560px) {
+    .logo {
+        display: none;
+    }
+}

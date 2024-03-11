@@ -7,8 +7,10 @@
     </mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <div class="description">
-      <span>Description: {{ executionFact.description }}</span>
+    <div>
+      <ng-scrollbar class="description">
+        <span> Description: {{ executionFact.description }}</span>
+      </ng-scrollbar>
       <div>
         <div>
           Started at:
@@ -22,7 +24,11 @@
         }
       </div>
       @if(executionFact.templateName) {
-      <span>Template name: {{ executionFact.templateName }}</span>
+      <ng-scrollbar
+        ><span
+          >Template name: {{ executionFact.templateName }}</span
+        ></ng-scrollbar
+      >
       } @if(executionFact.testimonies.length > 0) {
       <div>Witnesses:</div>
       <mat-chip-set aria-label="Testimonies">

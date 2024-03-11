@@ -7,7 +7,12 @@
       </div>
     </div>
   </div>
-  <mat-drawer #drawer class="example-sidenav" mode="over">
-    <side-nav></side-nav>
+  <mat-drawer
+    #drawer
+    class="example-sidenav"
+    mode="over"
+    (click)="drawer.close()"
+  >
+    <side-nav [userRole]="userRole"></side-nav>
   </mat-drawer>
 </mat-drawer-container>

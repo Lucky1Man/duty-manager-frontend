@@ -12,16 +12,13 @@ import { ExecutionFactService } from './services/execution-fact.service';
 import { ParticipantService } from './services/participant.service';
 import { TemplateService } from './services/template.service';
 import { SideNavComponent } from './side-nav/side-nav.component';
+import { Role } from '../shared/participant';
+import { Events } from '../shared/duty-manager-events';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    HeaderComponent,
-    MatSidenavModule,
-    SideNavComponent
-  ],
+  imports: [RouterOutlet, HeaderComponent, MatSidenavModule, SideNavComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: [
@@ -33,13 +30,33 @@ import { SideNavComponent } from './side-nav/side-nav.component';
     TemplateService,
     ParticipantService,
     provideNativeDateAdapter(),
-    DatePipe
+    DatePipe,
   ],
 })
 export class AppComponent implements OnInit {
-  constructor(private authenticationService: AuthenticationService) {}
+  private _userRole?: Role;
+  constructor(
+    private authenticationService: AuthenticationService,
+    eventBus: NgEventBus
+  ) {
+    this._userRole = this.getUserRole();
+    eventBus
+      .on(Events.LOGGED_IN)
+      .subscribe(() => (this._userRole = this.getUserRole()));
+    eventBus
+      .on(Events.LOGGED_OUT)
+      .subscribe(() => (this._userRole = undefined));
+  }
 
   ngOnInit(): void {
     this.authenticationService.checkIfAlreadyLoggedIn();
+  }
+
+  private getUserRole() {
+    return this.authenticationService.getParticipant()?.role;
+  }
+
+  get userRole() {
+    return this._userRole;
   }
 }

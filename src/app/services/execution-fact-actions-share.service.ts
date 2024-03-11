@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ExecutionFact } from '../../shared/execution-fact';
 import { RecordExecutionFact } from '../../shared/execution-facts-types';
 
 @Injectable({

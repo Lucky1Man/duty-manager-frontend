@@ -1,0 +1,48 @@
+<div class="template-item-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <ng-scrollbar>{{ template.name }}</ng-scrollbar>
+        <mat-card-subtitle
+          ><ng-scrollbar>{{
+            template.description
+          }}</ng-scrollbar></mat-card-subtitle
+        >
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="template-update-section">
+        <div>
+          <mat-form-field>
+            <mat-label>Enter new template name</mat-label>
+            <input matInput [placeholder]="template.name" />
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field>
+            <mat-label>Enter new description</mat-label>
+            <textarea matInput [placeholder]="template.description"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        class="template-action"
+        type="button"
+        mat-raised-button
+        color="accent"
+      >
+        Update
+      </button>
+      <button
+        class="template-action"
+        type="button"
+        mat-raised-button
+        color="warn"
+      >
+        Delete
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

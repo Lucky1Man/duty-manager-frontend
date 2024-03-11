@@ -1,0 +1,38 @@
+<div class="templates-filter-container">
+  <div class="name-filter">
+    <mat-form-field>
+      <mat-label>Enter template name</mat-label>
+      <input matInput [formControl]="senderTemplateName" />
+      @if (senderTemplateName.invalid) {
+      <mat-error>Maximal length is 100</mat-error>
+      }
+    </mat-form-field>
+    <div class="name-filter-actions">
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
+        (click)="updateFilters(); emitFilters()"
+      >
+        Search
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
+        (click)="clearFilters(); emitFilters()"
+        [color] = "activeFilters.length !== 0 ? 'accent' : 'primary'"
+      >
+        Clear
+      </button>
+    </div>
+  </div>
+  <div>
+    <mat-paginator
+      (page)="pageChange.emit($event)"
+      [pageSize]="50"
+      [length]="numberOfTemplates"
+      class="paginator"
+    ></mat-paginator>
+  </div>
+</div>

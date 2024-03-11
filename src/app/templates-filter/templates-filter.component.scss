@@ -1,0 +1,23 @@
+@import url(../../variables.scss);
+
+.templates-filter-container {
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    .name-filter {
+        display: flex;
+        .name-filter-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            button {
+                margin-left: 20px;
+            }
+        }
+    }
+    .paginator {
+        background-color: rgba(0, 0, 0, 0);
+    }
+}

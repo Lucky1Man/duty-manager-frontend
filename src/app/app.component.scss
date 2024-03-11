@@ -11,6 +11,7 @@ mat-drawer-container {
             overflow: auto;
             .container {
                 height: 100%;
+                max-width: 1500px;
             }
         }
     }

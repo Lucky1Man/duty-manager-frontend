@@ -1,0 +1,26 @@
+@import url(../../variables.scss);
+
+.create-template-container {
+    display: flex;
+    justify-content: end;
+    mat-panel-title {
+        font-size: 20px;
+    }
+    .create-template-content {
+        margin-top: 10px;
+        display: flex;
+        .create-template-form {
+            mat-form-field {
+                width: 305px;
+            }
+            .create-template-form-description {
+                height: 200px;
+            }
+            .create-template-form-button {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+    }
+}

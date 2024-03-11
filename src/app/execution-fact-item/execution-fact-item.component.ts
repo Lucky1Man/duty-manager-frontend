@@ -6,11 +6,12 @@ import { MatChipsModule } from '@angular/material/chips';
 import { ExecutionFact } from '../../shared/execution-fact';
 import { ExecutionFactActionsShareService } from '../services/execution-fact-actions-share.service';
 import { RouterModule } from '@angular/router';
+import { NgScrollbar } from 'ngx-scrollbar';
 
 @Component({
   selector: 'execution-fact-item',
   standalone: true,
-  imports: [MatCardModule, MatButtonModule, CommonModule, MatChipsModule, RouterModule],
+  imports: [MatCardModule, MatButtonModule, CommonModule, MatChipsModule, RouterModule, NgScrollbar],
   templateUrl: './execution-fact-item.component.html',
   styleUrl: './execution-fact-item.component.scss',
 })

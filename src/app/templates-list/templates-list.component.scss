@@ -1,0 +1,7 @@
+.templates-list-container {
+    display: flex;
+    flex-wrap: wrap;
+    .template-item {
+        margin: 10px;
+    }
+}
