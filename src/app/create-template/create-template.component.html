@@ -5,12 +5,19 @@
         <mat-panel-title> Create new template </mat-panel-title>
         <mat-icon>control_point</mat-icon>
       </mat-expansion-panel-header>
-      <div class="create-template-content">
+      <form class="create-template-content" [formGroup]="createTemplateForm">
         <div class="create-template-form">
           <div>
             <mat-form-field>
               <mat-label>Enter template name</mat-label>
-              <input matInput placeholder="Some name" />
+              <input
+                formControlName="senderTemplateName"
+                matInput
+                placeholder="Some name"
+              />
+              @if (createTemplateForm.get('senderTemplateName')?.invalid) {
+              <mat-error>{{ getErrorMessage("senderTemplateName") }}</mat-error>
+              }
             </mat-form-field>
           </div>
           <div>
@@ -20,16 +27,28 @@
                 class="create-template-form-description"
                 matInput
                 placeholder="Some description"
+                formControlName="senderTemplateDescription"
               ></textarea>
+              @if (createTemplateForm.get('senderTemplateDescription')?.invalid)
+              {
+              <mat-error>{{
+                getErrorMessage("senderTemplateDescription")
+              }}</mat-error>
+              }
             </mat-form-field>
           </div>
           <div class="create-template-form-button">
-            <button mat-raised-button type="button" color="primary">
+            <button
+              mat-raised-button
+              type="button"
+              color="primary"
+              (click)="create()"
+            >
               Create
             </button>
           </div>
         </div>
-      </div>
+      </form>
     </mat-expansion-panel>
   </mat-accordion>
 </div>

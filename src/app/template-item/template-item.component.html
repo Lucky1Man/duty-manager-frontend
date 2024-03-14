@@ -12,18 +12,37 @@
     </mat-card-header>
     <mat-card-content>
       <div class="template-update-section">
-        <div>
-          <mat-form-field>
-            <mat-label>Enter new template name</mat-label>
-            <input matInput [placeholder]="template.name" />
-          </mat-form-field>
-        </div>
-        <div>
-          <mat-form-field>
-            <mat-label>Enter new description</mat-label>
-            <textarea matInput [placeholder]="template.description"></textarea>
-          </mat-form-field>
-        </div>
+        <form [formGroup]="updateTemplateForm">
+          <div>
+            <mat-form-field>
+              <mat-label>Enter new template name</mat-label>
+              <input
+                matInput
+                [placeholder]="template.name"
+                formControlName="senderTemplateName"
+              />
+              @if (updateTemplateForm.get('senderTemplateName')?.invalid) {
+              <mat-error>{{ getErrorMessage("senderTemplateName") }}</mat-error>
+              }
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field>
+              <mat-label>Enter new description</mat-label>
+              <textarea
+                matInput
+                [placeholder]="template.description"
+                formControlName="senderTemplateDescription"
+              ></textarea>
+              @if (updateTemplateForm.get('senderTemplateDescription')?.invalid)
+              {
+              <mat-error>{{
+                getErrorMessage("senderTemplateDescription")
+              }}</mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </form>
       </div>
     </mat-card-content>
     <mat-card-actions>
@@ -32,6 +51,7 @@
         type="button"
         mat-raised-button
         color="accent"
+        (click)="updateTemplate()"
       >
         Update
       </button>
@@ -40,6 +60,7 @@
         type="button"
         mat-raised-button
         color="warn"
+        (click)="deleteTemplate()"
       >
         Delete
       </button>

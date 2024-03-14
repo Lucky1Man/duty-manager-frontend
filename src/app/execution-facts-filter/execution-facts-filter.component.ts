@@ -3,8 +3,8 @@ import {
   Component,
   EventEmitter,
   Injectable,
+  Input,
   OnDestroy,
-  OnInit,
   Output,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -24,7 +24,7 @@ import {
   MatPaginatorModule,
   PageEvent,
 } from '@angular/material/paginator';
-import { add, compareAsc, differenceInDays } from 'date-fns';
+import { add, differenceInDays, isSameDay, subDays } from 'date-fns';
 import { Subject, Subscription } from 'rxjs';
 import {
   ExecutionFactFilter,
@@ -84,26 +84,18 @@ export class ExecutionFactPaginator implements MatPaginatorIntl, OnDestroy {
   templateUrl: './execution-facts-filter.component.html',
   styleUrl: './execution-facts-filter.component.scss',
 })
-export class ExecutionFactsFilterComponent implements OnInit, OnDestroy {
+export class ExecutionFactsFilterComponent implements OnDestroy {
+  private static readonly DEFAULT_PAGE_SIZE: number = 7;
   private static readonly DEFAULT_FROM_DATE =
     ExecutionFactsFilterComponent.initDefaultFromDate();
-  private static readonly DEFAULT_TO_DATE =
-    ExecutionFactsFilterComponent.initDefaultToDate();
+  private static readonly DEFAULT_TO_DATE = new Date();
   private static readonly DEFAULT_LOAD_PARAMETERS = {
     from: ExecutionFactsFilterComponent.DEFAULT_FROM_DATE,
     to: ExecutionFactsFilterComponent.DEFAULT_TO_DATE,
   };
-  protected static readonly DEFAULT_PAGE_SIZE = 7;
 
   private static initDefaultFromDate(): Date {
-    const currentDate = new Date();
-    currentDate.setDate(currentDate.getDate() - 7);
-    return currentDate;
-  }
-  private static initDefaultToDate(): Date {
-    const currentDate = new Date();
-    currentDate.setDate(currentDate.getDate());
-    return currentDate;
+    return subDays(new Date(), ExecutionFactsFilterComponent.DEFAULT_PAGE_SIZE);
   }
 
   private subscriptions: Subscription[] = [];
@@ -118,17 +110,18 @@ export class ExecutionFactsFilterComponent implements OnInit, OnDestroy {
   );
   stateFilter = { active: true, finished: true };
   pageOptions = [1, 3, 7, 31];
+  private _loadSettingsChanged = false;
+  activeFilters: ExecutionFactFilter[] = [];
+  activeStateFilter: ExecutionFactFilter = () => true;
 
+  @Input() pageSize = ExecutionFactsFilterComponent.DEFAULT_PAGE_SIZE;
+  @Input() defaultLoadParameters: ExecutionFactLoadParameters =
+    ExecutionFactsFilterComponent.DEFAULT_LOAD_PARAMETERS;
   @Output() private filterChanged = new EventEmitter<ExecutionFactFilter[]>();
   @Output() private stateFilterChanged =
     new EventEmitter<ExecutionFactFilter>();
-  @Output() private pageChanged = new EventEmitter<PageEvent>();
 
-  activeFilters: ExecutionFactFilter[] = [];
-  activeStateFilter: ExecutionFactFilter = () => true;
-  activeLoadSettings: ExecutionFactLoadParameters =
-    ExecutionFactsFilterComponent.DEFAULT_LOAD_PARAMETERS;
-  _pageSize = ExecutionFactsFilterComponent.DEFAULT_PAGE_SIZE;
+  _activeLoadSettings: ExecutionFactLoadParameters = this.defaultLoadParameters;
 
   constructor(
     private factsLoadSettingsService: ExecutionFactsLoadParametersShareService
@@ -139,15 +132,6 @@ export class ExecutionFactsFilterComponent implements OnInit, OnDestroy {
         this.senderToDate.setValue(settings.to);
       })
     );
-  }
-
-  ngOnInit(): void {
-    this.pageChanged.emit({
-      length: 0,
-      pageIndex: 0,
-      pageSize: this._pageSize,
-    });
-    this.factsLoadSettingsService.nextLoadParameters(this.activeLoadSettings);
   }
 
   ngOnDestroy(): void {
@@ -175,11 +159,8 @@ export class ExecutionFactsFilterComponent implements OnInit, OnDestroy {
   updateLoadSetting() {
     this.activeLoadSettings = {
       from:
-        this.senderFromDate.getRawValue() ??
-        ExecutionFactsFilterComponent.DEFAULT_FROM_DATE,
-      to:
-        this.senderToDate.getRawValue() ??
-        ExecutionFactsFilterComponent.DEFAULT_TO_DATE,
+        this.senderFromDate.getRawValue() ?? this.defaultLoadParameters.from,
+      to: this.senderToDate.getRawValue() ?? this.defaultLoadParameters.to,
     };
   }
 
@@ -188,8 +169,7 @@ export class ExecutionFactsFilterComponent implements OnInit, OnDestroy {
   }
 
   clearLoadSettings() {
-    this.activeLoadSettings =
-      ExecutionFactsFilterComponent.DEFAULT_LOAD_PARAMETERS;
+    this.activeLoadSettings = this.defaultLoadParameters;
   }
 
   changeSelectedLoadState(event: MatButtonToggleChange) {
@@ -217,7 +197,7 @@ export class ExecutionFactsFilterComponent implements OnInit, OnDestroy {
   }
 
   changePage(page: PageEvent) {
-    this._pageSize = page.pageSize;
+    this.pageSize = page.pageSize;
     const pageOffset = this.getDaysOffset(page);
     let fromDate = this.activeLoadSettings.from;
     if (
@@ -228,7 +208,7 @@ export class ExecutionFactsFilterComponent implements OnInit, OnDestroy {
     ) {
       fromDate = add(fromDate, { days: pageOffset });
     }
-    const toDate = add(fromDate, { days: this._pageSize });
+    const toDate = add(fromDate, { days: this.pageSize });
     this.activeLoadSettings = {
       from: fromDate,
       to: toDate,
@@ -244,25 +224,28 @@ export class ExecutionFactsFilterComponent implements OnInit, OnDestroy {
     }
   }
 
-  get pageSize() {
-    return this._pageSize;
-  }
-
   get maxLength() {
     return Number.MAX_SAFE_INTEGER;
   }
 
-  loadSettingsHaveChanged() {
-    return (
-      compareAsc(
-        this.activeLoadSettings.from,
-        ExecutionFactsFilterComponent.DEFAULT_FROM_DATE
-      ) !== 0 ||
-      compareAsc(
-        this.activeLoadSettings.to,
-        ExecutionFactsFilterComponent.DEFAULT_TO_DATE
-      ) !== 0
-    );
+  get loadSettingsChanged() {
+    return this._loadSettingsChanged;
+  }
+
+  get activeLoadSettings() {
+    return this._activeLoadSettings;
+  }
+
+  set activeLoadSettings(settings: ExecutionFactLoadParameters) {
+    this._activeLoadSettings = settings;
+    if (
+      isSameDay(settings.from, this.defaultLoadParameters.from) &&
+      isSameDay(settings.to, this.defaultLoadParameters.to)
+    ) {
+      this._loadSettingsChanged = false;
+    } else {
+      this._loadSettingsChanged = true;
+    }
   }
 
   calculateCurrentIndex(): number {

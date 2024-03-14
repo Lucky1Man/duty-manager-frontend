@@ -4,7 +4,7 @@
     [matMenuTriggerFor]="menu"
     aria-label="Example icon-button with a menu"
     [ngClass]="
-      activeFilters.length !== 0 || loadSettingsHaveChanged() ? 'accent-100' : ''
+      activeFilters.length !== 0 || loadSettingsChanged ? 'accent-100' : ''
     "
   >
     <mat-icon>more_vert</mat-icon>
@@ -84,7 +84,7 @@
         </button>
         <button
           mat-raised-button
-          [color] = "loadSettingsHaveChanged() ? 'accent' : 'primary'"
+          [color] = "loadSettingsChanged ? 'accent' : 'primary'"
           type="button"
           (click)="clearLoadSettings(); emitLoadSettings()"
         >

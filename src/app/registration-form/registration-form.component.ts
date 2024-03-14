@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { NgEventBus } from 'ng-event-bus';
 import { validatePassword } from './password-validator';
-import { getErrorMessage } from './validation-errors-getter';
+import { getErrorMessage } from '../../shared/validation-errors-getter';
 import { Events } from '../../shared/duty-manager-events';
 
 @Component({

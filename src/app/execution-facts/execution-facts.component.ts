@@ -16,6 +16,7 @@ import { AuthenticationService } from '../services/authentication.service';
 import { NgEventBus } from 'ng-event-bus';
 import { Events } from '../../shared/duty-manager-events';
 import { ExecutionFactActionsShareService } from '../services/execution-fact-actions-share.service';
+import { subDays } from 'date-fns';
 
 @Component({
   selector: 'app-execution-facts',
@@ -34,34 +35,41 @@ import { ExecutionFactActionsShareService } from '../services/execution-fact-act
   styleUrl: './execution-facts.component.scss',
 })
 export class ExecutionFactsComponent implements OnDestroy, OnInit {
+  defaultLoadParameters = {
+    from: subDays(new Date(), 7),
+    to: new Date(),
+  };
+
   private participantId?: string;
   private subscriptions: Subscription[] = [];
   private _executionFacts: ExecutionFact[] = [];
   private _executionFactFilters: ExecutionFactFilter[] = [];
-  private _executionFactsLoadParameters?: ExecutionFactLoadParameters;
+  private _executionFactsLoadParameters: ExecutionFactLoadParameters =
+    this.defaultLoadParameters;
   private _executionFactsStateFilter: ExecutionFactFilter = () => true;
   private _userAllowedToChangeFacts = true;
 
   constructor(
     private factService: ExecutionFactService,
+    private factsLoadingParametersService: ExecutionFactsLoadParametersShareService,
     authService: AuthenticationService,
     route: ActivatedRoute,
-    factsLoadingParametersService: ExecutionFactsLoadParametersShareService,
     factsActionsService: ExecutionFactActionsShareService,
     eventBus: NgEventBus
   ) {
     this.subscriptions.push(
       route.queryParamMap.subscribe((params) => {
         this.participantId = params.get('participant-id') ?? undefined;
-        this._userAllowedToChangeFacts = !(
-          this.participantId !== undefined &&
-          authService.getParticipant()?.id !== this.participantId
-        );
-        this.loadExecutionFacts();
+        if (this.participantId) {
+          this._userAllowedToChangeFacts = authService.getParticipant()?.id === this.participantId;
+          if(!this._userAllowedToChangeFacts) {
+            this.loadExecutionFacts();
+          }
+        }
       })
     );
     this.subscriptions.push(
-      factsLoadingParametersService.onLoadParameters((parameters) => {
+      this.factsLoadingParametersService.onLoadParameters((parameters) => {
         this.parameters = parameters;
       })
     );
@@ -93,8 +101,8 @@ export class ExecutionFactsComponent implements OnDestroy, OnInit {
 
   private async loadExecutionFacts() {
     this._executionFacts = await this.factService.fetchExecutionFacts(
-      this._executionFactsLoadParameters?.from,
-      this._executionFactsLoadParameters?.to,
+      this._executionFactsLoadParameters.from,
+      this._executionFactsLoadParameters.to,
       this.participantId
     );
   }
@@ -116,7 +124,9 @@ export class ExecutionFactsComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
-    this.loadExecutionFacts();
+    this.factsLoadingParametersService.nextLoadParameters(
+      this._executionFactsLoadParameters
+    );
   }
 
   get executionFacts(): ExecutionFact[] {

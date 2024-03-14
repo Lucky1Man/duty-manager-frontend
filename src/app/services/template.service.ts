@@ -3,40 +3,45 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AxiosError } from 'axios';
 import { Template } from '../../shared/template';
 import { AxiosService } from './axios.service';
+import { CreateTemplate, UpdateTemplate } from '../../shared/templates-types';
+import { ErrorAlertingService } from './error-alerting-service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class TemplateService {
-  constructor(private axios: AxiosService, private snackBar: MatSnackBar) {}
-
-  async fetchTemplates() : Promise<Template[]> {
-    try {
-      const response = await this.axios.request('get', 'templates');
-      return response.data as Template[];
-    } catch (error: any) {
-      this.alertUser(error)
-      return Promise.reject(error);
-    }
+export class TemplateService extends ErrorAlertingService {
+  
+  constructor(axios: AxiosService, snackBar: MatSnackBar) {
+    super(axios, snackBar);
   }
 
-  async getNumberOfTemplates() : Promise<number> {
-    try {
-      const response = await this.axios.request('get', 'templates/quantity');
-      return response.data as number;
-    } catch (error: any) {
-      this.alertUser(error)
-      return Promise.reject(error);
-    }
+  async fetchTemplates(
+    page: number = 0,
+    pageSize: number = 50
+  ): Promise<Template[]> {
+    return super.alertingRequest('get', 'templates', undefined, {
+      page: page,
+      pageSize: pageSize,
+    });
   }
 
-  private alertUser(error: AxiosError<any, any>) {
-    this.snackBar.open(
-      error.response?.data.message ?? error.message,
-      undefined,
-      {
-        duration: 10000,
-      }
-    );
+  async fetchTemplate(id: String): Promise<Template> {
+    return super.alertingRequest('get', `templates/${id}`);
+  }
+
+  async getNumberOfTemplates(): Promise<number> {
+    return super.alertingRequest('get', 'templates/quantity');
+  }
+
+  async createTemplate(newTemplate: CreateTemplate): Promise<string> {
+    return super.alertingRequest('post', 'templates', newTemplate);
+  }
+
+  async updateTemplate(updatedTemplate: UpdateTemplate) {
+    return super.alertingRequest('put', 'templates', updatedTemplate);
+  }
+
+  async deleteTemplate(id: String): Promise<void> {
+    return super.alertingRequest('delete', `templates/${id}`);
   }
 }

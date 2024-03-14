@@ -2,7 +2,9 @@
   <div class="templates-header">
     <templates-filter
       [numberOfTemplates]="numberOfTemplates"
+      [defaultPage]="page"
       (filtersChange)="filters = $event"
+      (pageChange)="loadNewPage($event)"
     ></templates-filter>
   </div>
   <mat-divider></mat-divider>

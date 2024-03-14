@@ -1,6 +1,7 @@
 <div class="execution-facts-container">
   <div class="execution-facts-filter">
     <execution-facts-filter
+      [defaultLoadParameters]="defaultLoadParameters"
       (filterChanged)="filters = $event"
       (stateFilterChanged)="stateFilter = $event"
     ></execution-facts-filter>
